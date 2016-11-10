@@ -1,0 +1,21 @@
+---
+- name: Install LTS kernel
+  pacman: name={{ item }} state=present
+  with_items:
+      - linux-lts
+      - linux-lts-headers
+  notify:
+    - rebuild grub
+  tags:
+    - work
+
+- name: Remove mainline kernel
+  pacman: name={{ item }} state=absent
+  with_items:
+      - linux
+      - linux-headers
+      - linux-firmware
+  notify:
+    - rebuild grub
+  tags:
+    - work

@@ -1,0 +1,40 @@
+user:
+    name: gilligan
+    uid: 1000
+    group: gilligan
+    shell: /usr/bin/zsh
+    email:  Stephen.Brown2@gmail.com
+    log_dir: log
+    xdg_dirs: yes
+
+base_packages:
+    - bc
+    - git
+    - glances
+    - gnupg
+    - jq
+    - lsof
+    - moreutils
+    - pv
+    - python-docs
+    - python-keyring
+    - python-secretstorage
+    - python2-docs
+    - reflector
+    - rsync
+    - sysdig
+    - tig
+    - tmux
+    - xdg-utils
+  #  - arch-wiki-lite
+  #  - fabric
+  #  - minicom
+  #  - ruby
+  #  - strace
+  #  - sysstat
+
+aur:
+    dir: aur
+    packages:
+        - pacaur
+        - lastpass-cli

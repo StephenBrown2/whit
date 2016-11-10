@@ -4,6 +4,7 @@
   roles:
     - { role: base, tags: ['base'] }
     - { role: cron, tags: ['cron'] }
+    - { role: microcode, tags: ['microcode'], when: "'GenuineIntel' in ansible_processor" }
   vars_prompt:
     - name: user_password
       prompt: "Enter desired user password"

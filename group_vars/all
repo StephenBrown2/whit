@@ -38,3 +38,5 @@ aur:
     packages:
         - pacaur
         - lastpass-cli
+
+bootloader: systemd-boot

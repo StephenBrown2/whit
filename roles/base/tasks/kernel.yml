@@ -1,18 +1,16 @@
 ---
-- name: Install LTS kernel
+- name: Install kernel
   pacman: name={{ item }} state=present
   with_items:
-      - linux-lts
-      - linux-lts-headers
+      - linux
+      - linux-headers
   notify:
     - rebuild grub
-  tags:
-    - work
 
 - name: Create systemd-boot loader entries folder
   file: path=/boot/loader/entries state=directory
   when: bootloader == "systemd-boot"
 
-- name: Add LTS kernel bootloader entry
-  copy: src=systemd-boot.conf dest=/boot/loader/entries/linux-lts.conf
+- name: Add kernel bootloader entry
+  copy: src=systemd-boot.conf dest=/boot/loader/entries/linux.conf
   when: bootloader == "systemd-boot"

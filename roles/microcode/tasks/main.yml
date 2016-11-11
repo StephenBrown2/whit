@@ -3,3 +3,17 @@
   pacman: name=intel-ucode state=present
   notify:
     - rebuild grub
+
+- name: Add ucode line to systemd-boot kernel entry
+  lineinfile: dest=/boot/loader/entries/linux.conf
+              state=present
+              line="initrd   /intel-ucode.img"
+  when: bootloader == "systemd-boot"
+
+- name: Add ucode line to systemd-boot LTS kernel entry
+  lineinfile: dest=/boot/loader/entries/linux-lts.conf
+              state=present
+              line="initrd   /intel-ucode.img"
+  when: bootloader == "systemd-boot"
+  tags:
+    - work

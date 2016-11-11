@@ -39,4 +39,11 @@ aur:
         - pacaur
         - lastpass-cli
 
+ssh:
+    port: 22
+    generate_user_key: True
+    key_type: ed25519
+    key_bits: 9001
+    enable_sshd: False
+
 bootloader: systemd-boot

@@ -11,8 +11,6 @@
         shell={{ user.shell }}
         update_password=on_create
         uid={{ user.uid }}
-        generate_ssh_key=yes
-        ssh_key_type=ed25519
   tags:
     - user
 

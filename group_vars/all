@@ -37,6 +37,7 @@ aur:
     dir: aur
     packages:
         - pacaur
+        - downgrade
         - lastpass-cli
 
 ssh:

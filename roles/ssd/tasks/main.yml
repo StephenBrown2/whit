@@ -1,0 +1,5 @@
+---
+- name: Enable and start weekly filesystem TRIM timer
+  service: name=fstrim.timer enabled=yes state=started
+  with_dict: "{{ ansible_devices }}"
+  when: "{{ item.value.rotational }} == 0 and {{ item.value.support_discard }} > 0"

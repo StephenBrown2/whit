@@ -1,0 +1,63 @@
+---
+# - include: infinality.yml
+
+- name: Install Terminus
+  pacman: name=terminus-font state=present
+
+- name: Install Red Hat Liberation fonts
+  pacman: name=ttf-liberation state=present
+
+- name: Install Google's Noto fonts
+  pacman: name=noto-fonts state=present
+
+- name: Install DejaVu fonts
+  pacman: name=ttf-dejavu state=present
+
+- name: Install Android's Droid font
+  pacman: name=ttf-droid state=present
+
+- name: Install Hack font
+  pacman: name=ttf-hack state=present
+
+- name: Install Linux Libertine and Biolinum fonts
+  pacman: name=ttf-linux-libertine-g state=present
+
+- name: Install Ubuntu font family
+  pacman: name=ttf-ubuntu-font-family state=present
+
+- name: Install FontAwesome iconic font
+  aur: name=ttf-font-awesome user={{ user.name }}
+
+- name: Install Roboto fonts
+  aur: name={{ item }} user={{ user.name }}
+  with_items:
+    - ttf-roboto
+    - ttf-roboto-mono
+    - ttf-roboto-slab
+
+- name: Install xkcd fonts
+  aur: name={{ item }} user={{ user.name }}
+  with_items:
+    - otf-xkcd-font
+    - ttf-humor-sans
+
+- name: Install ChromeOS Core fonts
+  pacman: name=ttf-croscore state=present
+
+- name: Install ChromeOS Extra fonts
+  aur: name={{ item }} user={{ user.name }}
+  with_items:
+    - ttf-carlito
+    - ttf-caladea
+  tags:
+    - aur
+
+- name: Install Fira Code
+  aur: name=otf-fira-code user={{ user.name }}
+  tags:
+    - aur
+
+- name: Install Microsoft's open source replacement for Microsoft's Segoe UI
+  aur: name=ttf-selawik user={{ user.name }}
+  tags:
+    - aur

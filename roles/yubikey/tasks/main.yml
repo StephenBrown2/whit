@@ -1,0 +1,7 @@
+---
+- name: Install YubiKey tools
+  pacman: name={{ item }} state=present
+  with_items:
+    - yubico-pam
+    - yubikey-neo-manager
+    - yubikey-personalization-gui

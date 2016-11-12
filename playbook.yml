@@ -11,6 +11,7 @@
     - { role: ssd, tags: ['ssd'] }
     - { role: fonts, tags: ['fonts'] }
     - { role: x, tags: ['x'] }
+    - { role: yubikey, tags: ['yubikey'] }
   vars_prompt:
     - name: user_password
       prompt: "Enter desired user password"

@@ -8,12 +8,14 @@
   lineinfile: dest=/boot/loader/entries/linux.conf
               state=present
               line="initrd   /intel-ucode.img"
+              insertbefore=initramfs
   when: bootloader == "systemd-boot"
 
 - name: Add ucode line to systemd-boot LTS kernel entry
   lineinfile: dest=/boot/loader/entries/linux-lts.conf
               state=present
               line="initrd   /intel-ucode.img"
+              insertbefore=initramfs
   when: bootloader == "systemd-boot"
   tags:
     - work

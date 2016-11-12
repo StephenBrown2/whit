@@ -1,0 +1,110 @@
+---
+- name: Install mkinitcpio-ykfde
+  aur: name=mkinitcpio-ykfde user={{ user.name }}
+  register: ykfde_install
+  ignore_errors: True
+
+- name: Install eworm gpg key
+  command: pacman-key -r A6234074498E9CEE
+  when: ykfde_install.failed is defined and ykfde_install.failed
+
+- name: Trust eworm gpg key
+  command: pacman-key --lsign-key A6234074498E9CEE
+  when: ykfde_install.failed is defined and ykfde_install.failed
+
+- name: Try installing mkinitcpio-ykfde again
+  aur: name=mkinitcpio-ykfde user={{ user.name }}
+  when: ykfde_install.failed is defined and ykfde_install.failed
+
+- name: Check for YubiKey presence
+  command: ykinfo -a
+  register: ykinfo
+
+- debug: var=ykinfo
+
+- name: Get YubiKey serial
+  shell: ykinfo -qs
+  register: ykinfo_serial
+
+- name: Set ykserial fact
+  set_fact: ykserial="{{ ykinfo_serial.stdout }}"
+
+- name: Get LUKS device UUID
+  shell: lsblk -nouuid {{ luks.device }} | head -1
+  register: luks_blk_uuid
+  check_mode: no
+
+- debug: var=luks_blk_uuid.stdout
+
+- name: Get LUKS device name UUID
+  shell: lsblk -nouuid /dev/mapper/{{ luks.dmname }} | head -1
+  register: luks_dev_uuid
+  check_mode: no
+
+- debug: var=luks_dev_uuid.stdout
+
+- name: Set up /etc/crypttab.initramfs
+  lineinfile:
+      line="{{ luks.dmname }} {{ luks.device }} -"
+      dest=/etc/crypttab.initramfs
+      state=present
+      create=yes
+
+- name: Set up /etc/ykfde.conf
+  template: src=ykfde.conf.j2 dest=/etc/ykfde.conf
+
+- name: Set Second YubiKey slot to CHAL-HMAC
+  shell: yes | ykpersonalize -2 -o chal-hmac
+
+# Currently fails with yk_challenge_response() failed: Resource temporarily unavailable
+#- name: Run ykfde to set up challenge
+#  command: ykfde
+#
+#- name: Run ykfde-cpio to initialize cpio
+#  command: ykfde-cpio
+#  notify: rebuild grub
+
+- name: Please manually run `ykfde && ykfde-cpio`
+  command: echo 'ykfde && ykfde-cpio'
+
+- name: Add ykfde line to systemd-boot kernel entry
+  lineinfile: dest=/boot/loader/entries/linux.conf
+              state=present
+              line="initrd   /ykfde-challenges.img"
+              insertbefore=initramfs
+  when: bootloader == "systemd-boot"
+
+- name: Add ucode line to systemd-boot LTS kernel entry
+  lineinfile: dest=/boot/loader/entries/linux-lts.conf
+              state=present
+              line="initrd   /ykfde-challenges.img"
+              insertbefore=initramfs
+  when: bootloader == "systemd-boot"
+  tags:
+    - work
+
+- name: Add systemd hook to mkinitcpio.conf
+  replace: dest=/etc/mkinitcpio.conf
+           regexp="udev"
+           replace="systemd"
+  register: systemd_hook_added
+  notify: rebuild grub
+
+- name: Add ykfde hooks to mkinitcpio.conf
+  replace: dest=/etc/mkinitcpio.conf
+           regexp="filesystems keyboard fsck"
+           replace="keyboard ykfde sd-encrypt sd-lvm2 filesystems fsck"
+  register: ykfde_hook_added
+  notify: rebuild grub
+
+- name: Rebuild kernel
+  shell: mkinitcpio -p linux
+  when: systemd_hook_added.changed or ykfde_hook_added.changed
+  check_mode: yes
+
+- name: Rebuild LTS kernel
+  shell: mkinitcpio -p linux-lts
+  when: systemd_hook_added.changed or ykfde_hook_added.changed
+  check_mode: yes
+  tags:
+    - work

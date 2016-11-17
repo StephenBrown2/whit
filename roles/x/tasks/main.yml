@@ -17,9 +17,22 @@
 - name: Install xorg-sessreg
   pacman: name=xorg-sessreg state=present
 
+- name: Get GPU manufacturer
+  shell: lspci -m | grep VGA | awk -F\" '{printf $4}'
+  register: gpu_manufacturer
+
+- name: Get Intel GPU rev
+  shell: lspci -m | grep VGA | awk -F\" '{printf substr ($6, 0, 1)}'
+  register: intel_gpu_rev
+  when: gpu_manufacturer.stdout == "Intel Corporation"
+
 - name: Install video driver(s)
   pacman: name={{ item }} state=present
   with_items: "{{ video_drivers }}"
+
+- name: Install Intel Vulkan driver
+  pacman: name=vulkan-intel state=present
+  when: gpu_manufacturer.stdout == "Intel Corporation" and intel_gpu_rev.stdout|int >= 6
 
 - name: Add user to video group
   user: name={{ user.name }} groups=video append=yes

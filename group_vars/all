@@ -51,8 +51,6 @@ bootloader: systemd-boot
 
 video_drivers:
     - xf86-video-intel
-    # - libva-intel-driver
-    # - vulkan-intel
 
 luks:
     device: /dev/sda2

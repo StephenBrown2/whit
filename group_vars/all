@@ -55,3 +55,7 @@ video_drivers:
 luks:
     device: /dev/sda2
     dmname: cryptroot
+
+editors:
+    - sublime-text-dev
+    - atom-editor-bin

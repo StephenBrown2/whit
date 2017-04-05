@@ -7,6 +7,7 @@
     - { role: microcode, tags: ['microcode'], when: "'GenuineIntel' in ansible_processor" }
     - { role: cron, tags: ['cron'] }
     - { role: ssh, tags: ['ssh'] }
+    - { role: editors, tags: ['editors'] }
     - { role: dotfiles, tags: ['dotfiles'] }
     - { role: ssd, tags: ['ssd'] }
     - { role: fonts, tags: ['fonts'] }

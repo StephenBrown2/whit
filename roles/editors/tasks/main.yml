@@ -1,0 +1,4 @@
+---
+- name: Install editors
+  aur: name={{ item }} user={{ user.name }}
+  with_items: "{{ editors }}"

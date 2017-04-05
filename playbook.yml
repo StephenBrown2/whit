@@ -13,6 +13,7 @@
     - { role: x, tags: ['x'] }
     - { role: yubikey, tags: ['yubikey'] }
     - { role: ykfde, tags: ['ykfde'] }
+    - { role: zoom, tags: ['zoom'] }
   vars_prompt:
     - name: user_password
       prompt: "Enter desired user password"

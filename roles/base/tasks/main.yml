@@ -12,5 +12,6 @@
 - include: shell.yml
 - include: user.yml
 - include: sudo.yml
+- include: makepkg.yml
 - include: packages.yml
 - include: kernel.yml

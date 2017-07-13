@@ -1,16 +1,39 @@
 user:
-    name: gilligan
+    name: stephen
     uid: 1000
-    group: gilligan
+    group: stephen
     shell: /usr/bin/zsh
-    email:  Stephen.Brown2@gmail.com
+    email: Stephen.Brown2@gmail.com
+    work_email: stephen.brownii@rackspace.com
     log_dir: log
     xdg_dirs: yes
 
+aur:
+    dir: aur
+    packages:
+        - pacaur
+        - downgrade
+        - lastpass-cli
+        - longoverdue
+        - zplug
+
+ssh:
+    port: 22
+    generate_user_key: True
+    key_type: ed25519
+    key_bits: 9001
+    enable_sshd: False
+
+editors:
+    - atom-editor-bin
+
+video_drivers:
+    - xf86-video-intel
+
 base_packages:
+    - base-devel
     - bc
     - git
-    - glances
     - gnupg
     - jq
     - lsof
@@ -22,40 +45,21 @@ base_packages:
     - python2-docs
     - reflector
     - rsync
-    - sysdig
-    - tig
     - tmux
     - xdg-utils
-  #  - arch-wiki-lite
-  #  - fabric
-  #  - minicom
-  #  - ruby
-  #  - strace
-  #  - sysstat
-
-aur:
-    dir: aur
-    packages:
-        - pacaur
-        - downgrade
-        - lastpass-cli
-
-ssh:
-    port: 22
-    generate_user_key: True
-    key_type: ed25519
-    key_bits: 9001
-    enable_sshd: False
 
 bootloader: systemd-boot
 
-video_drivers:
-    - xf86-video-intel
+nameservers:
+    - 8.8.8.8        # Google
+    - 8.8.4.4        # Google
+    - 209.244.0.3    # Level 3
+    - 74.82.42.42    # Hurricane Electric
+    - 208.67.222.222 # OpenDNS
+    - 208.67.220.220 # OpenDNS
+    - 2001:4860:4860::8888 # Google IPv6
+    - 2001:4860:4860::8844 # Google IPv6
 
 luks:
     device: /dev/sda2
     dmname: cryptroot
-
-editors:
-    - sublime-text-dev
-    - atom-editor-bin

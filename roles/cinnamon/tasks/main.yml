@@ -1,0 +1,3 @@
+---
+- name: Install cinnamon
+  pacman: name=cinnamon state=present

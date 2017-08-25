@@ -1,3 +1,6 @@
 [submodule "library/ansible-aur"]
 	path = library/ansible-aur
 	url = git@github.com:pigmonkey/ansible-aur.git
+[submodule "vagrant/packer-io"]
+	path = vagrant/packer-io
+	url = git@github.com:elasticdog/packer-arch.git

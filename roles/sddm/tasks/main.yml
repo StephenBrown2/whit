@@ -1,0 +1,9 @@
+---
+- name: Install SDDM
+  pacman: name={{ item }} state=present
+  with_items:
+    - sddm
+    - sddm-theme-archpaint2
+
+- name: Enable SDDM
+  service: name=sddm.service enabled=yes

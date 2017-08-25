@@ -54,7 +54,7 @@
   template: src=ykfde.conf.j2 dest=/etc/ykfde.conf
 
 - name: Set Second YubiKey slot to CHAL-HMAC
-  shell: yes | ykpersonalize -2 -o chal-resp -o chal-hmac
+  shell: yes | ykpersonalize -2 -o chal-hmac
 
 # Currently fails with yk_challenge_response() failed: Resource temporarily unavailable
 #- name: Run ykfde to set up challenge

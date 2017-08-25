@@ -1,6 +1,6 @@
 user:
     name: stephen
-    uid: 1000
+    uid: 1111
     group: stephen
     shell: /usr/bin/zsh
     email: Stephen.Brown2@gmail.com
@@ -8,12 +8,16 @@ user:
     log_dir: log
     xdg_dirs: yes
 
+#dotfiles:
+#  url: git@github.com:StephenBrown2/dotfiles.git
+#  destination: git/hub/dotfiles
+#  rcup_flags: -fx README.md -x .gitignore
+
 aur:
     dir: aur
     packages:
         - pacaur
         - downgrade
-        - lastpass-cli
         - longoverdue
         - zplug
 
@@ -25,10 +29,14 @@ ssh:
     enable_sshd: False
 
 editors:
-    - atom-editor-bin
+  #  - sublime-text-dev
+  #  - sublime-url-handler
+    - atom-editor-beta-bin
+    - ttf-atom-file-icons
 
 video_drivers:
     - xf86-video-intel
+    - libva-intel-driver
 
 base_packages:
     - base-devel
@@ -47,6 +55,7 @@ base_packages:
     - rsync
     - tmux
     - xdg-utils
+    - lastpass-cli
 
 bootloader: systemd-boot
 

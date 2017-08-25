@@ -1,6 +1,6 @@
 ---
 - name: Install srandrd
-  aur: name=srandrd user={{ user.name }}
+  action: aur name=srandrd user={{ user.name }}
   tags:
     - aur
     - srandrd

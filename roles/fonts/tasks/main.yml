@@ -1,63 +1,70 @@
 ---
-# - include: infinality.yml
+- name: Install freetype2
+  pacman: name=freetype2 state=present
 
-- name: Install Terminus
-  pacman: name=terminus-font state=present
+- name: Install cairo
+  pacman: name=cairo state=present
 
-- name: Install Red Hat Liberation fonts
-  pacman: name=ttf-liberation state=present
+- name: Install fontconfig
+  pacman: name=fontconfig state=present
 
-- name: Install Google's Noto fonts
-  pacman: name=noto-fonts state=present
+- name: Enable LCD filter
+  file: src=/etc/fonts/conf.avail/11-lcdfilter-default.conf
+        dest=/etc/fonts/conf.d/11-lcdfilter-default.conf
+        state=link
 
-- name: Install DejaVu fonts
-  pacman: name=ttf-dejavu state=present
+- name: Enable sub-pixel rendering
+  file: src=/etc/fonts/conf.avail/10-sub-pixel-rgb.conf
+        dest=/etc/fonts/conf.d/10-sub-pixel-rgb.conf
+        state=link
 
-- name: Install Android's Droid font
-  pacman: name=ttf-droid state=present
+- name: Enable hinting
+  file: src=/etc/fonts/conf.avail/10-hinting-slight.conf
+        dest=/etc/fonts/conf.d/10-hinting-slight.conf
+        state=link
 
-- name: Install Hack font
-  pacman: name=ttf-hack state=present
+- name: Push font substitutions
+  copy: src=local.conf dest=/etc/fonts/local.conf
 
-- name: Install Linux Libertine and Biolinum fonts
-  pacman: name=ttf-linux-libertine-g state=present
+- name: Install core fonts
+  pacman: name={{ item }} state=present
+  with_items:
+      - cantarell-fonts
+      - gsfonts
+      - noto-fonts
+      - terminus-font
+      - tex-gyre-fonts
+      - ttf-croscore
+      - ttf-dejavu
+      - ttf-droid
+      - ttf-hack
+      - ttf-liberation
+      - ttf-linux-libertine-g
+      - ttf-roboto
+      - ttf-symbola
+      - ttf-ubuntu-font-family
 
-- name: Install Ubuntu font family
-  pacman: name=ttf-ubuntu-font-family state=present
-
-- name: Install FontAwesome iconic font
-  aur: name=ttf-font-awesome user={{ user.name }}
-
-- name: Install Roboto fonts
+- name: Install AUR fonts
   aur: name={{ item }} user={{ user.name }}
   with_items:
-    - ttf-roboto
-    - ttf-roboto-mono
-    - ttf-roboto-slab
-
-- name: Install xkcd fonts
-  aur: name={{ item }} user={{ user.name }}
-  with_items:
-    - otf-xkcd-font
-    - ttf-humor-sans
-
-- name: Install ChromeOS Core fonts
-  pacman: name=ttf-croscore state=present
-
-- name: Install ChromeOS Extra fonts
-  aur: name={{ item }} user={{ user.name }}
-  with_items:
-    - ttf-carlito
-    - ttf-caladea
-  tags:
-    - aur
-
-- name: Install Fira Code
-  aur: name=otf-fira-code user={{ user.name }}
-  tags:
-    - aur
-
-- name: Install Microsoft's open source replacement for Microsoft's Segoe UI
-  aur: name=ttf-selawik user={{ user.name }}
+      - otf-fira-code
+      - otf-xkcd-font
+      - ttf-caladea
+      - ttf-carlito
+      - ttf-courier-prime
+      - ttf-font-awesome
+      - ttf-heuristica
+      - ttf-humor-sans
+      - ttf-impallari-cantora
+      - ttf-merriweather
+      - ttf-merriweather-sans
+      - ttf-opensans
+      - ttf-oswald
+      - ttf-quintessential
+      - ttf-roboto-mono
+      - ttf-roboto-slab
+      - ttf-selawik
+      - ttf-signika
+      - ttf-xkcd-script-font
   tags:
     - aur

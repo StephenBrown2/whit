@@ -1,6 +1,6 @@
 ---
 - name: Install zoom
-  aur: name=zoom user={{ user.name }}
+  action: aur name=zoom user={{ user.name }}
   tags:
     - aur
     - work

@@ -1,0 +1,10 @@
+---
+- name: Install tilix and supporting packages
+  action: aur name={{ item }} user={{ user.name }}
+  with_items:
+    - vte3-tilix
+    - gtkd
+    - tilix
+  tags:
+    - aur
+    - tilix

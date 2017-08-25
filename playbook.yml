@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: all
   become: yes
   roles:
     - { role: base, tags: ['base'] }
@@ -7,14 +7,16 @@
     - { role: microcode, tags: ['microcode'], when: "'GenuineIntel' in ansible_processor" }
     - { role: cron, tags: ['cron'] }
     - { role: ssh, tags: ['ssh'] }
-    - { role: editors, tags: ['editors'] }
     - { role: dotfiles, tags: ['dotfiles'] }
     - { role: ssd, tags: ['ssd'] }
     - { role: fonts, tags: ['fonts'] }
     - { role: x, tags: ['x'] }
-    - { role: yubikey, tags: ['yubikey'] }
-    - { role: ykfde, tags: ['ykfde'] }
+    - { role: editors, tags: ['editors'] }
     - { role: zoom, tags: ['zoom'] }
+    - { role: yubikey, tags: ['yubikey'] }
+    - { role: sddm, tags: ['sddm'] }
+    - { role: cinnamon, tags: ['cinnamon'] }
+    # - { role: ykfde, tags: ['ykfde'] }
   vars_prompt:
     - name: user_password
       prompt: "Enter desired user password"

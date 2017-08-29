@@ -4,3 +4,7 @@
 [submodule "vagrant/packer-io"]
 	path = vagrant/packer-io
 	url = git@github.com:elasticdog/packer-arch.git
+[submodule "roles/networkmanager/files/nmtrust"]
+	path = roles/networkmanager/files/nmtrust
+	url = git@github.com:StephenBrown2/nmtrust.git
+	branch = count_untrusted

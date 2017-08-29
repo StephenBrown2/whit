@@ -26,7 +26,7 @@
   tags:
     - user
 
-- name: Create user xdg dirs and local bin dir
+- name: Create xdg base dirs and local bin dir
   file: path=/home/{{ user.name }}/{{ item }} state=directory owner={{ user.name }} group={{ user.group }}
   with_items:
     - .config
@@ -36,3 +36,31 @@
   when: user.xdg_dirs
   tags:
     - user
+
+- name: Install xdg-user-dirs
+  pacman: name=xdg-user-dirs state=present
+  when: user.xdg_dirs
+  tags:
+    - user
+
+- name: Push xdg user dirs config
+  copy: src={{ item }} dest=/home/{{ user.name }}/.config/{{ item }} owner={{ user.name }} group={{ user.group }}
+  with_items:
+    - user-dirs.dirs
+    - xdg-dirs.dirs
+  when: user.xdg_dirs
+  tags:
+    - user
+
+- name: Create xdg user dirs
+  file: path=/home/{{ user.name }}/{{ item }} state=directory owner={{ user.name }} group={{ user.group }}
+  with_items:
+    - Desktop
+    - Downloads
+    - Templates
+    - Public
+    - Documents
+    - Media
+    - Media/Music
+    - Media/Pictures
+    - Media/Videos

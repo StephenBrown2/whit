@@ -42,5 +42,5 @@
 - include: volwheel.yml
 # - include: autorandr.yml # for laptop
 # - include: srandrd.yml # for laptop
-- include: tilix.yml
+- include: terminator.yml
 - include: autocutsel.yml

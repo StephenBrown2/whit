@@ -26,12 +26,26 @@ ssh:
     generate_user_key: True
     key_type: ed25519
     key_bits: 9001
-    enable_sshd: False
+    enable_sshd: True
+    allowed_users:
+        - vagrant
+
+network:
+    spoof_mac: False
+    conn_check:
+        interval: 0
+    trusted_uuid:
+        - c471d245-96b8-3e08-90e9-94263b589b00
+        - a5e451a8-4b34-4c4e-bb37-a70462f24863
+        - b9ea1517-9108-4db6-9dd8-71f8a6218bf8
+        - 037c99a9-e8fc-450a-ae28-0f27c17bd69b
+
 
 editors:
   #  - sublime-text-dev
   #  - sublime-url-handler
     - atom-editor-beta-bin
+    - woff2-git  # AUR dep for ttf-atom-file-icons
     - ttf-atom-file-icons
 
 video_drivers:
@@ -57,6 +71,13 @@ base_packages:
     - xdg-utils
     - lastpass-cli
 
+filesystem_packages:
+    - btrfs-progs
+    - dosfstools
+    - hfsprogs
+    - ntfs-3g
+    - exfat-utils
+
 bootloader: systemd-boot
 
 nameservers:
@@ -69,6 +90,17 @@ nameservers:
     - 2001:4860:4860::8888 # Google IPv6
     - 2001:4860:4860::8844 # Google IPv6
 
+firejail:
+    blacklist:
+        - ~/.local/share/lpass
+        - ~/.password-store
+        - ~/.contacts
+        - ~/.keys
+
 luks:
     device: /dev/sda2
     dmname: cryptroot
+
+udisks:
+    auto_mount: False
+    shared_mount: True

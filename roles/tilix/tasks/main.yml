@@ -1,0 +1,16 @@
+---
+- name: Install vte3 for tilix
+  action: aur name=vte3-tilix user={{ user.name }}
+  tags:
+    - aur
+    - tilix
+# - name: Install gtkd for tilix
+#   action: aur name=gtkd user={{ user.name }}
+#   tags:
+#     - aur
+#     - tilix
+- name: Install tilix
+  action: aur name=tilix-bin user={{ user.name }}
+  tags:
+    - aur
+    - tilix

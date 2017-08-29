@@ -11,12 +11,28 @@
     - { role: ssd, tags: ['ssd'] }
     - { role: fonts, tags: ['fonts'] }
     - { role: x, tags: ['x'] }
-    - { role: editors, tags: ['editors'] }
-    - { role: zoom, tags: ['zoom'] }
     - { role: yubikey, tags: ['yubikey'] }
     - { role: sddm, tags: ['sddm'] }
+    # - { role: i3, tags: ['i3'] }
+    # - { role: sway, tags: ['sway'] }
     - { role: cinnamon, tags: ['cinnamon'] }
+    - { role: zoom, tags: ['zoom'] }
+    - { role: pass, tags: ['pass'] }
+    - { role: iptables, tags: ['iptables'] }
+    - { role: nettools, tags: ['nettools'] }
+    - { role: networkmanager, tags: ['networkmanager'] }
+    - { role: macchiato, tags: ['macchiato'] }
+    - { role: ntp, tags: ['ntp'] }
+    - { role: firejail, tags: ['firejail'] }
+    - { role: unbound, tags: ['unbound'] }
+    - { role: editors, tags: ['editors'] }
+    - { role: filesystems, tags: ['filesystems'] }
+    - { role: archive, tags: ['archive'] }
+    - { role: udisks, tags: ['udisks'] }
+    - { role: spell, tags: ['spell'] }
+    # - { role: tilix, tags: ['tilix'] }
     # - { role: ykfde, tags: ['ykfde'] }
+    # - { role: cleanup, tags: ['cleanup'] }
   vars_prompt:
     - name: user_password
       prompt: "Enter desired user password"

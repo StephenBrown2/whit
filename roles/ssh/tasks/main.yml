@@ -14,11 +14,14 @@
     - reload systemd config
     - restart sshd
 
-- name: Enable and start OpenSSH
+- name: Disable and stop OpenSSH service
+  service: name=sshd.service enabled=no state=stopped
+
+- name: Enable and start OpenSSH socket
   service: name=sshd.socket enabled=yes state=started
   when: ssh.enable_sshd == True
 
-- name: Disable and stop OpenSSH
+- name: Disable and stop OpenSSH socket
   service: name=sshd.socket enabled=no state=stopped
   when: ssh.enable_sshd == False
 
@@ -59,6 +62,3 @@
 - name: Install user SSH key
   copy: src={{ ssh.user_key }} dest=/home/{{ user.name }}/.ssh/{{ ssh.user_key.split('/')[-1] }} mode=600 owner={{ user.name }} group={{ user.group }}
   when: ssh.generate_user_key == False and ssh.user_key is defined
-
-- name: Install Mosh
-  pacman: name=mosh state=present

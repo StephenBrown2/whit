@@ -1,0 +1,6 @@
+---
+- name: Restrict sudoers.d configuration to require passwords again
+  replace: path=/etc/sudoers.d/{{ user.name|replace('.', '_') }}
+           regexp=' NOPASSWD:' replace='' validate='visudo -cf %s'
+  tags:
+    - sudo

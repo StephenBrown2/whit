@@ -8,7 +8,7 @@ AllowTcpForwarding no
 X11Forwarding no
 PrintMotd no
 PrintLastLog yes
-AllowUsers {{ user.name }}
+AllowUsers {{ user.name }} {{ ssh.allowed_users|join(' ') }}
 LoginGraceTime 1m
 ChallengeResponseAuthentication no
 PubkeyAuthentication yes

@@ -48,6 +48,38 @@ editors:
     - woff2-git  # AUR dep for ttf-atom-file-icons
     - ttf-atom-file-icons
 
+atom_packages:
+    - atom-jinja2
+    - busy-signal
+    - editorconfig
+    - git-blame
+    - git-plus
+    - intentions
+    - language-ansible
+    - language-apache
+    - language-docker
+    - language-nginx
+    - language-robot-framework
+    - lines
+    - linter
+    - linter-mypy
+    - linter-pylama
+    - linter-pylint
+    - linter-shellcheck
+    - linter-ui-default
+    - local-history
+    - MagicPython
+    - markdown-scroll-sync
+    - minimap
+    - minimap-git-diff
+    - multi-wrap-guide
+    - pigments
+    - platformio-ide-terminal
+    - python-isort
+    - python-tools
+    - restart-atom
+    - split-diff
+
 video_drivers:
     - xf86-video-intel
     - libva-intel-driver

@@ -8,3 +8,6 @@
 	path = roles/networkmanager/files/nmtrust
 	url = git@github.com:StephenBrown2/nmtrust.git
 	branch = count_untrusted
+[submodule "roles/atom"]
+	path = roles/atom
+	url = git@github.com:jgkim/ansible-role-atom.git

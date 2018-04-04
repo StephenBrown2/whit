@@ -113,6 +113,9 @@ filesystem_packages:
 bootloader: systemd-boot
 
 nameservers:
+    - 1.1.1.1        # Cloudflare
+    - 1.0.0.1        # Cloudflare
+    - 9.9.9.9        # Quad9
     - 8.8.8.8        # Google
     - 8.8.4.4        # Google
     - 209.244.0.3    # Level 3
@@ -121,6 +124,11 @@ nameservers:
     - 208.67.220.220 # OpenDNS
     - 2001:4860:4860::8888 # Google IPv6
     - 2001:4860:4860::8844 # Google IPv6
+
+cron: fcron
+
+video_drivers:
+    - xf86-video-intel
 
 firejail:
     blacklist:

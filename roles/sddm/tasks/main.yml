@@ -14,5 +14,9 @@
               state=present
               line="Current=archpaint2"
 
+- name: Set user profile pic
+  get_url: url=https://pbs.twimg.com/profile_images/743307007290028033/IFmFFUwd.jpg
+           dest=/home/{{ user.name }}/.face.icon
+
 - name: Enable SDDM
   service: name=sddm.service enabled=yes

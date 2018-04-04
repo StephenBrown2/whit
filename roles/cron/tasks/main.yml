@@ -1,6 +1,14 @@
 ---
-- name: Install cronie
-  pacman: name=cronie state=present
+- name: Install {{ cron }}
+  pacman: name={{ cron }} state=present
 
-- name: Enable cronie
-  service: name=cronie.service enabled=yes state=started
+- name: Enable {{ cron }}
+  service: name={{ cron }}.service enabled=yes state=started
+
+- name: Copy dummy cron
+  copy: src=cron dest=/usr/bin/cron mode=0755
+  when: cron == "fcron"
+
+- name: Copy dummy crontab
+  copy: src=crontab dest=/usr/bin/crontab mode=0755
+  when: cron == "fcron"

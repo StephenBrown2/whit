@@ -1,4 +1,24 @@
 #!/usr/bin/env zsh
+if [ ! ping -c1 1.1.1.1 ]; then
+  echo 'Network not connected, setting up network now'
+  ip a
+  read -p "Interface: " adapter
+  read -p "Username: " user_name
+  read -s -p "Password: " user_password
+  cat <<EOF > /etc/wpa_supplicant/wpa_supplicant-wired-${adapter}.conf
+ctrl_interface=/var/run/wpa_supplicant
+ap_scan=0
+network={
+  eap=PEAP
+  key_mgmt=IEEE8021X
+  phase2="autheap=MSCHAPV2"
+  identity="${user_name}"
+  password="${user_password}"
+}
+EOF
+  systemctl start dhcpcd@${adapter}.service
+fi
+
 DRIVE=/dev/$(lsblk | awk '/disk/{print $1}' | sort -u | head -1)
 MYHOSTNAME=raxnuc
 ALWAYSPAUSE=0
@@ -275,6 +295,41 @@ ekho "Enabling NetworkManager without systemd"
 ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/dbus-org.freedesktop.NetworkManager.service
 ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/multi-user.target.wants/NetworkManager.service
 ln -s /usr/lib/systemd/system/NetworkManager-dispatcher.service /etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service
+
+ekho "Configuring NetworkManager 802.1x connection"
+ip a
+read -p "Interface: " interface
+read -p "Username: " identity
+read -s -p "Password: " password
+cat <<EOF > /etc/NetworkManager/system-connections/RS-802-1x
+[connection]
+id=RS-802-1x
+uuid=$(uuidgen)
+type=ethernet
+interface-name=${interface}
+permissions=
+timestamp=$(date +%s)
+
+[ethernet]
+mac-address-blacklist=
+
+[802-1x]
+eap=peap;
+identity=${identity}
+password=${password}
+phase1-peapver=0
+phase2-auth=mschapv2
+system-ca-certs=true
+
+[ipv4]
+dns-search=
+method=auto
+
+[ipv6]
+addr-gen-mode=stable-privacy
+dns-search=
+method=auto
+EOF
 
 ekho "Setting keyserver options"
 sed -i 's@keyserver hkp.*@keyserver hkps://hkps.pool.sks-keyservers.net:443@' /etc/pacman.d/gnupg/gpg.conf

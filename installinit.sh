@@ -1,11 +1,12 @@
 #!/usr/bin/env zsh
-if [ ! ping -c1 1.1.1.1 ]; then
+if ! ping -c1 1.1.1.1; then
   echo 'Network not connected, setting up network now'
   ip a
-  read -p "Interface: " adapter
-  read -p "Username: " user_name
-  read -s -p "Password: " user_password
-  cat <<EOF > /etc/wpa_supplicant/wpa_supplicant-wired-${adapter}.conf
+  read 'adapter?Interface: '
+  read 'user_name?Username: '
+  read -s 'user_password?Password: '
+  if ! (systemctl status NetworkManager | grep -q 'Active: active (running)'); then
+    cat <<EOF > /etc/wpa_supplicant/wpa_supplicant-wired-${adapter}.conf
 ctrl_interface=/var/run/wpa_supplicant
 ap_scan=0
 network={
@@ -16,10 +17,30 @@ network={
   password="${user_password}"
 }
 EOF
-  systemctl start dhcpcd@${adapter}.service
+    systemctl start dhcpcd@${adapter}.service
+  else
+    nmcli connection add save yes \
+    +connection.id RS8021x \
+    +connection.type 802-3-ethernet \
+    +connection.interface-name ${adapter} \
+    +ipv4.method auto \
+    +802-1x.eap peap \
+    +802-1x.phase1-peapver 0 \
+    +802-1x.phase2-auth mschapv2 \
+    +802-1x.system-ca-certs no \
+    +802-1x.identity "${user_name}" \
+    +802-1x.password "${user_password}"
+    nmcli connection up RS8021x
+  fi
 fi
 
-DRIVE=/dev/$(lsblk | awk '/disk/{print $1}' | sort -u | head -1)
+if ! ping -c1 archlinux.org; then
+  echo "Sorry, couldn't get networking working."
+  echo "Please set it up manually and try again."
+  exit
+fi
+
+DRIVE=/dev/$(lsblk | awk '/ disk /{print $1}' | sort -u | head -1)
 MYHOSTNAME=raxnuc
 ALWAYSPAUSE=0
 function ekho {
@@ -33,9 +54,10 @@ function ekho {
   echo
   echo "${@}"
 }
-printf -v SWAPSIZE %.0f $(($(awk '/MemTotal/{print $2}' /proc/meminfo) * 1.25 / 1000000))
+printf -v SWAPSIZE %.0f $((($(awk '/MemTotal/{print $2}' /proc/meminfo) * 1.25) / 1000000))
 echo "Swap will be ${SWAPSIZE}GiB"
 
+lsblk
 ekho "Zapping ${DRIVE}..."
 echo "Press w to wipe and continue, z to just zap the disk, or CTRL-C to exit"
 read p
@@ -46,7 +68,8 @@ if [[ "${p}" == "w" ]]; then
 elif [[ "${p}" == "z" ]]; then
   sgdisk --zap-all ${DRIVE}
 fi
-partprobe ${DRIVE}
+partprobe ${DRIVE} || exit
+lsblk
 
 ekho "Creating partitions on ${DRIVE}"
 sgdisk --clear \
@@ -54,43 +77,44 @@ sgdisk --clear \
        --new=2:0:+${SWAPSIZE}GiB --typecode=2:8200 --change-name=2:cryptswp \
        --new=3:0:0               --typecode=2:8300 --change-name=3:cryptsys \
          ${DRIVE}
-partprobe ${DRIVE}
+partprobe ${DRIVE} || exit
+lsblk
 
 ekho "Making EFI filesystem"
-mkfs.fat -F32 -n EFI /dev/disk/by-partlabel/EFI
+mkfs.fat -F32 -n EFI /dev/disk/by-partlabel/EFI || exit
 
 ekho "Creating LUKS partition for system"
-cryptsetup luksFormat --align-payload=8192 -s 256 -c aes-xts-plain64 /dev/disk/by-partlabel/cryptsys
+cryptsetup luksFormat --align-payload=8192 --key-size 512 --cipher aes-xts-plain64 /dev/disk/by-partlabel/cryptsys || exit
 
 ekho "Opening LUKS partition for system"
-cryptsetup open /dev/disk/by-partlabel/cryptsys system
+cryptsetup open --type luks /dev/disk/by-partlabel/cryptsys system || exit
 
 ekho "Opening LUKS partition for swap"
-cryptsetup open --type plain --key-file /dev/random /dev/disk/by-partlabel/cryptswp swap
+cryptsetup open --type plain --key-file /dev/random /dev/disk/by-partlabel/cryptswp swap || exit
 
 ekho "Initializing swap on /dev/mapper/swap"
-mkswap -L swap /dev/mapper/swap
+mkswap -L swap /dev/mapper/swap || exit
 
-ekho "Engaging swap"
+ekho "Engaging swap" || exit
 swapon -L swap
 
 ekho "Creating BTRFS filesystem on /dev/mapper/system"
-mkfs.btrfs --force --label system /dev/mapper/system
+mkfs.btrfs --force --label system /dev/mapper/system || exit
 
 DEFAULT_OPTS=defaults,x-mount.mkdir
 BTRFS_OPTS=${DEFAULT_OPTS},compress=lzo,ssd,noatime
 
 ekho "Mounting BTRFS filesystem on /mnt"
-mount -t btrfs LABEL=system /mnt
+mount -t btrfs LABEL=system /mnt || exit
 
 ekho "Creating subvolume for root"
-btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@ || exit
 
 ekho "Creating subvolume for /home"
-btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@home || exit
 
 ekho "Creating subvolume for /.snapshots"
-btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@snapshots || exit
 
 ekho "Unmounting /mnt system"
 umount -R /mnt
@@ -330,6 +354,7 @@ addr-gen-mode=stable-privacy
 dns-search=
 method=auto
 EOF
+chmod 600 /etc/NetworkManager/system-connections/RS-802-1x
 
 ekho "Setting keyserver options"
 sed -i 's@keyserver hkp.*@keyserver hkps://hkps.pool.sks-keyservers.net:443@' /etc/pacman.d/gnupg/gpg.conf

@@ -75,7 +75,7 @@ ekho "Creating partitions on ${DRIVE}"
 sgdisk --clear \
        --new=1:0:+550MiB         --typecode=1:ef00 --change-name=1:EFI \
        --new=2:0:+${SWAPSIZE}GiB --typecode=2:8200 --change-name=2:cryptswp \
-       --new=3:0:0               --typecode=2:8300 --change-name=3:cryptsys \
+       --new=3:0:0               --typecode=3:8300 --change-name=3:cryptsys \
          ${DRIVE}
 partprobe ${DRIVE} || exit
 lsblk
@@ -105,7 +105,7 @@ DEFAULT_OPTS=defaults,x-mount.mkdir
 BTRFS_OPTS=${DEFAULT_OPTS},compress=lzo,ssd,noatime
 
 ekho "Mounting BTRFS filesystem on /mnt"
-mount -t btrfs LABEL=system /mnt || exit
+mount -t btrfs -o ${BTRFS_OPTS} LABEL=system /mnt || exit
 
 ekho "Creating subvolume for root"
 btrfs subvolume create /mnt/@ || exit
@@ -152,7 +152,7 @@ ekho "Cleaning up ranked list"
 rm -f /etc/pacman.d/mirrorlist.ranked
 
 ekho "Updating archlinux-keyring"
-pacman -Syy archlinux-keyring pacman
+pacman -Syy --needed archlinux-keyring pacman
 
 ekho "Running pacstrap"
 pacstrap /mnt btrfs-progs ansible base

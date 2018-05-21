@@ -7,26 +7,7 @@ set -e
 # https://github.com/mdaffin/arch-pkgs/blob/master/installer/install-arch
 
 ###
-### Configuration
-###
-
-INS_BAK_DIR='/installation'
-INS_DISK="${INS_DISK:-/dev/$(lsblk | awk '/ disk /{print $1}' | sort -u | head -1)}"
-INS_DOC="${INS_BAK_DIR}/README.md"
-INS_EFI_SIZE='+550MiB'
-INS_TIME_ZONE="${INS_TIME_ZONE:-America/Chicago}"
-INS_SWAP_KEY=/etc/swap.key
-INS_SWAP_SIZE="$(free -g | awk '/^Mem:/ { printf "+%1.fGiB", $2+1 }')"
-INS_EFI_PART="${INS_DISK}1"
-INS_SWAP_PART="${INS_DISK}2"
-INS_ROOT_PART="${INS_DISK}3"
-
-# You'll get prompted for the password if it's not set.
-# It's most secure to use that way or pass it into the script environment.
-#INS_ENC_PASS="foo"
-
-###
-### Function definitions
+### Utility funcs
 ###
 
 function stderr {
@@ -38,20 +19,90 @@ function error {
     return 1
 }
 
+function password_prompt {
+    CREDENTIAL="${1}"
+    read -p "Enter ${CREDENTIAL} password: " -s ENTER1
+    read -p "Enter ${CREDENTIAL} password again: " -s ENTER2
+    if [[ "${ENTER1}" != "${ENTER2}" ]]; then
+        error 'Passwords do not match'
+    fi
+    echo "${ENTER1}"
+    unset ENTER1 ENTER2
+}
+
+###
+### User prompts
+###
+DEF_DISK=$(lsblk | awk '/ disk /{print "/dev/"$1}' | sort -u | head -1)
+devicelist=$(lsblk -dlpnx size -o name,size,type | awk '/ disk$/{print $1,$2}')
+readarray -t devicechoices <<<"$devicelist"
+echo "Please select disk to use (default ${DEF_DISK}): "
+if [ -z "${INS_DISK}" ]; then
+  select INS_DISK in "${devicechoices[@]}"; do break; done
+fi
+INS_DISK="${INS_DISK:-${DEF_DISK}}"
+INS_DISK="${INS_DISK%% *}"
+stderr "${INS_DISK} selected\n"
+
+read -p 'Enter hostname for machine: ' -i 'raxnuc' -e INS_HOSTNAME
+stderr "'${INS_HOSTNAME}' entered\n"
+
+if [[ -z "${INS_ROOTPASS}" ]]; then
+    INS_ROOTPASS=$(password_prompt 'root user')
+fi
+
+read -p 'Enter username: ' -i 'stephen' -e INS_USERNAME
+stderr "'${INS_USERNAME}' entered\n"
+
+if [[ -z "${INS_USERPASS}" ]]; then
+    INS_USERPASS=$(password_prompt "'${INS_USERNAME}' user")
+fi
+
+if [[ -z "${INS_ENC_PASS}" ]]; then
+    INS_ENC_PASS=$(password_prompt 'disk encryption')
+fi
+
+###
+### Configuration
+###
+
+INS_BAK_DIR='/installation'
+INS_DOC="${INS_BAK_DIR}/README.md"
+INS_EFI_SIZE='+550MiB'
+INS_TIME_ZONE="${INS_TIME_ZONE:-America/Chicago}"
+INS_SWAP_KEY=/etc/swap.key
+INS_SWAP_SIZE="$(free -g | awk '/^Mem:/ { printf "+%1.fGiB", $2+1 }')"
+INS_EFI_PART="${INS_DISK}1"
+INS_SWAP_PART="${INS_DISK}2"
+INS_ROOT_PART="${INS_DISK}3"
+NET_INTERFACE=""
+NET_USERNAME=""
+NET_USERPASS=""
+
+
+###
+### Function definitions
+###
+
 function test_network {
     local TEST_ADDR="${1:-1.1.1.1}"
     if ! ping -c1 "${TEST_ADDR}" 1>/dev/null
     then
-        echo "Network not connected, assuming 802.1x auth needed"
-        ip link
-        read -p "Interface: " interface
-        read -p "Username: " user_name
-        read -s -p "Password: " user_pass
+        stderr "Network not connected, assuming 802.1x auth needed"
+        INT_LIST=$(ip link | awk '/^[0-9]+:/{gsub(/:$/,"",$2); print $2}' | grep -v lo)
+        readarray -t choices <<<"${INT_LIST}"
+        stderr "Select network interface (default ${choices[0]})\n"
+        select INS_INTERFACE in "${choices[@]}"; do break; done
+        NET_INTERFACE=${INS_INTERFACE:-${choices[0]}}
+        stderr "Selected: ${NET_INTERFACE}\n"
+
+        read -p "Enter 802.1x username: " NET_USERNAME
+        NET_USERPASS=$(password_prompt "802.1x")
         if (systemctl status NetworkManager | grep -q 'Active: active (running)')
         then
-            setup_nmcli_8021x "${interface}" "${user_name}" "${user_pass}"
+            setup_nmcli_8021x "${NET_INTERFACE}" "${NET_USERNAME}" "${NET_USERPASS}"
         else
-            setup_dhcpcd_8021x "${interface}" "${user_name}" "${user_pass}"
+            setup_dhcpcd_8021x "${NET_INTERFACE}" "${NET_USERNAME}" "${NET_USERPASS}"
         fi
     fi
     if ! ping -c1 archlinux.org 1>/dev/null
@@ -139,6 +190,17 @@ function assert_efi_boot {
     fi
 }
 
+function zap_partition_table {
+    local DISK="${1}"
+    read -n 1 -p "Wipe partition table on ${DISK} (y/n)? " answer
+    if [ "$answer" != "${answer#[Yy]}" ] ;then
+        sgdisk --zap-all "${DISK}"
+        partprobe "${DISK}"
+    else
+        error "Cannot continue."
+    fi
+}
+
 function assert_valid_disk {
     local DISK="${1}"
     local OUTPUT
@@ -147,7 +209,8 @@ function assert_valid_disk {
         error "Disk ${DISK} missing"
     fi
     if echo "${OUTPUT}" | grep Start 1>/dev/null; then
-        error "Disk ${DISK} is not empty (it has a partition table)"
+        stderr "Disk ${DISK} is not empty (it has a partition table)"
+        zap_partition_table "${DISK}"
     fi
 }
 
@@ -227,7 +290,7 @@ function cryptsetup_slash {
     local PASSWORD="${1}"
     local PARTITION="${2}"
     local CONTAINER_NAME="${3:-cryptsys}"
-    
+
     # "--key-file -"" is used to take the password
     # from stdin, it won't actually use a file
     stderr "Formatting ${PARTITION} to hold LUKS container for /: "
@@ -263,11 +326,16 @@ function mount_chroot {
     create_btrfs_subvolume /mnt @home
     create_btrfs_subvolume /mnt @snapshots
     create_btrfs_subvolume /mnt @home@snapshots
+    create_btrfs_subvolume /mnt @var@log
+    create_btrfs_subvolume /mnt @var@cache@pacman@pkg
+
     umount -R /mnt
     mount -t btrfs -o "subvol=@,${BTRFS_OPTS}" "${ROOT_PARTITION}" /mnt
     mount -t btrfs -o "subvol=@home,${BTRFS_OPTS}" "${ROOT_PARTITION}" /mnt/home
     mount -t btrfs -o "subvol=@snapshots,${BTRFS_OPTS}" "${ROOT_PARTITION}" /mnt/.snapshots
     mount -t btrfs -o "subvol=@home@snapshots,${BTRFS_OPTS}" "${ROOT_PARTITION}" /mnt/home/.snapshots
+    mount -t btrfs -o "subvol=@var@log,${BTRFS_OPTS}" "${ROOT_PARTITION}" /mnt/var/log
+    mount -t btrfs -o "subvol=@var@cache@pacman@pkg,${BTRFS_OPTS}" "${ROOT_PARTITION}" /mnt/var/cache/pacman/pkg
     mount -t vfat -o "${DEFAULT_OPTS}" "${EFI_PARTITION}" /mnt/boot
     stderr 'DONE!\n'
 }
@@ -285,7 +353,7 @@ function cryptsetup_swap {
     local PARTITION="${1}"
     local SWAP_KEY="${2}"
     local CONTAINER_NAME="${3:-cryptswp}"
-    
+
     stderr "Formatting ${PARTITION} to hold LUKS container for swap: "
     cryptsetup luksFormat --batch-mode "${PARTITION}" "${SWAP_KEY}"
     stderr 'DONE!\n'
@@ -344,6 +412,110 @@ function update_mirrorlist {
     head -6 /etc/pacman.d/mirrorlist.ranked > /etc/pacman.d/mirrorlist
     echo "Server = https://mirror.rackspace.com/archlinux/\$repo/os/\$arch" >> /etc/pacman.d/mirrorlist
     tail -5 /etc/pacman.d/mirrorlist.ranked | grep -v rackspace >> /etc/pacman.d/mirrorlist
+    rm -f /etc/pacman.d/mirrorlist.ranked
+}
+
+function run_pacstrap {
+    local MOUNT="${1:-/mnt}"
+    pacman -Syy --needed archlinux-keyring pacman
+    pacstrap "${MOUNT}" ansible base base-devel btrfs-progs git go gptfdisk intel-ucode snapper terminus-font vim zsh
+}
+
+function generate_fstab {
+    local MOUNT="${1:-/mnt}"
+    genfstab -L -p "${MOUNT}" >> "${MOUNT}/etc/fstab"
+    sed -i 's@LABEL=swap@/dev/mapper/swap@' "${MOUNT}/etc/fstab"
+}
+
+function set_locale {
+    local MOUNT="${1:-/mnt}"
+    sed -i 's/^#en_US/en_US/' "${MOUNT}/etc/locale.gen"
+    arch-chroot "${MOUNT}" locale-gen
+    arch-chroot "${MOUNT}" localectl set-locale LANG=en_US.UTF-8
+}
+
+function set_hostname {
+    local _HOSTNAME=${1}
+    local MOUNT="${2:-/mnt}"
+    arch-chroot "${MOUNT}" hostnamectl set-hostname "${_HOSTNAME}"
+
+    cat <<EOF >> "${MOUNT}/etc/hosts"
+127.0.0.1  localhost
+::1        localhost
+127.0.1.1  ${_HOSTNAME}.localdomain ${_HOSTNAME}
+EOF
+}
+
+function configure_crypttabs {
+    local MOUNT="${1}"
+    local SYS_PART="/dev/disk/by-partlabel/${2}"
+    local SWP_PART="/dev/disk/by-partlabel/${3}"
+    local SWP_KEY="${4}"
+
+    cat <<EOF >> "${MOUNT}/etc/crypttab.initramfs"
+# <name>  <device>                           <password>    <options>
+system    ${SYS_PART}
+EOF
+    swap_options=$(awk '/# swap/{print $5}' "${MOUNT}/etc/crypttab")
+    echo "swap ${SWP_PART} ${SWP_KEY} ${swap_options:-swap}" >> "${MOUNT}/etc/crypttab"
+}
+
+
+function configure_mkinitcpio {
+    local MOUNT="${1:-/mnt}"
+    sed -i -e 's/^MODULES=.*/MODULES=(i915)/' "${MOUNT}/etc/mkinitcpio.conf"
+    sed -i -e 's/^HOOKS=/#HOOKS=/' "${MOUNT}/etc/mkinitcpio.conf"
+    sed -i -e '/#HOOKS=/a HOOKS=(base systemd sd-vconsole autodetect modconf keyboard block filesystems btrfs sd-encrypt fsck)' "${MOUNT}/etc/mkinitcpio.conf"
+    grep -v '^#' "${MOUNT}/etc/mkinitcpio.conf"
+    echo 'FONT=Lat2-Terminus16' >> "${MOUNT}/etc/vconsole.conf"
+}
+
+function configure_bootloader {
+    local MOUNT="${1}"
+    local ROOT_CONTAINER="${2:-/dev/mapper/${INS_ROOT_CONTAINER}}"
+    arch-chroot "${MOUNT}" bootctl --path=/boot install
+    cat <<EOF > "${MOUNT}/boot/loader/loader.conf"
+default arch
+timeout 5
+EOF
+
+    cat <<EOF > "${MOUNT}/boot/loader/entries/arch.conf"
+title    Arch Linux
+linux    /vmlinuz-linux
+initrd   /initramfs-linux.img
+options  luks.allow-discards root=${ROOT_CONTAINER} rootflags=subvol=@ rw
+EOF
+}
+
+function add_user {
+    local MOUNT="${1}"
+    local USERNAME="${2}"
+    local PASSWORD="${3}"
+    local USERID="${4:-1000}"
+    local COMMENT="${5:-normal user}"
+    arch-chroot "${MOUNT}" useradd -mU -u "${USERID}" -c "${COMMENT}" -s /usr/bin/zsh -G wheel,uucp,video,audio,storage,games,input "${USERNAME}"
+    echo "${USERNAME}:${PASSWORD}" | chpasswd --root "${MOUNT}"
+    mkdir "${MOUNT}/etc/sudoers.d"
+    echo "${USERNAME} ALL=(ALL) ALL" > "${MOUNT}/etc/sudoers.d/${USERNAME}"
+    echo "${USERNAME} ALL=(ALL) NOPASSWD:/usr/bin/pacman" >> "${MOUNT}/etc/sudoers.d/${USERNAME}"
+}
+
+function setup_snapper {
+    local MOUNT="${1:-/mnt}"
+    grep '@snapshots' "${MOUNT}/etc/fstab" >> /etc/fstab
+    umount "${MOUNT}/.snapshots"
+    rm -r "${MOUNT}/.snapshots"
+    umount "${MOUNT}/home/.snapshots"
+    rm -r "${MOUNT}/home/.snapshots"
+    arch-chroot "${MOUNT}" snapper -c root create-config /
+    arch-chroot "${MOUNT}" snapper -c home create-config /home
+    mount -a
+    arch-chroot "${MOUNT}" chmod 750 /.snapshots
+    arch-chroot "${MOUNT}" chmod 750 /home/.snapshots
+    snapper -c root set-config "ALLOW_USERS=${INS_USERNAME}" SYNC_ACL="yes"
+    snapper -c home set-config "ALLOW_USERS=${INS_USERNAME}" SYNC_ACL="yes"
+    arch-chroot "${MOUNT}" snapper -c root create --description 'Initial root Snapshot'
+    arch-chroot "${MOUNT}" snapper -c home create --description 'Initial home Snapshot'
 }
 
 function add_documentation {
@@ -359,7 +531,7 @@ function add_documentation {
     echo -e "## Before chroot\n";
 
     echo -e "\nInstallation parameters:\n";
-    
+
     printf "%-45s | %-35s\n" "Parameter" "Value";
     printf "%-45s | %-35s\n" "------" "------";
     eval "$(set | grep '^INS_' | grep -v PASSWORD | sed -e 's/INS_//' | sort | sed -r -e 's/([^=]+)=(.*)/printf "%-45s | %-35s\n" \1 \2/')";
@@ -388,25 +560,13 @@ function add_documentation {
 ### Installation
 ###
 
-if [[ -z "${INS_ENC_PASS}" ]]; then
-    stderr "Enter disk encryption password:\n"
-    read -s ENTER1
-    stderr "Enter disk encryption password again:\n"
-    read -s ENTER2
-    if [[ "${ENTER1}" != "${ENTER2}" ]]; then
-        error 'Passwords do not match'
-    fi
-    INS_ENC_PASS="${ENTER1}"
-    unset ENTER1 ENTER2
-fi
-
 test_network "1.1.1.1"
 
 assert_efi_boot
 
 assert_valid_disk "${INS_DISK}"
 
-set_time_through_ntp "$INS_TIME_ZONE"
+set_time_through_ntp "${INS_TIME_ZONE}"
 
 wipe_disk_with_random_data "${INS_DISK}"
 
@@ -414,13 +574,13 @@ create_partitions "${INS_DISK}" "${INS_EFI_SIZE}" "${INS_SWAP_SIZE}"
 
 format_fat32 "${INS_EFI_PART}"
 
-INS_ROOT_CONTAINER="$(cryptsetup_slash "${INS_PASSWORD}" "${INS_ROOT_PART}")"
+INS_ROOT_CONTAINER="$(cryptsetup_slash "${INS_ENC_PASS}" "${INS_ROOT_PART}")"
 
 format_btrfs "/dev/mapper/${INS_ROOT_CONTAINER}"
 
 mount_chroot "/dev/mapper/${INS_ROOT_CONTAINER}" "${INS_EFI_PART}"
 
-create_key "/mnt${INS_SWAP_KEY}"
+create_swap_key "/mnt${INS_SWAP_KEY}"
 
 INS_SWAP_CONTAINER="$(cryptsetup_swap "${INS_SWAP_PART}" "/mnt${INS_SWAP_KEY}")"
 
@@ -433,3 +593,28 @@ INS_BACKUP_LUKS_HEADER_BASENAME="$(backup_luks_header "${INS_SLASH_PART}" "/mnt$
 add_documentation "/mnt$INS_DOC" "$INS_DISK" "$INS_SWAP_KEY" "$INS_BAK_DIR/$INS_BACKUP_PARTITION_TABLE_BASENAME" "$INS_BAK_DIR/$INS_BACKUP_LUKS_HEADER_BASENAME"
 
 update_mirrorlist
+
+run_pacstrap "/mnt"
+
+generate_fstab "/mnt"
+
+configure_crypttabs "/mnt" "${INS_ROOT_CONTAINER}" "${INS_SWAP_CONTAINER}" "${INS_SWAP_KEY}"
+
+configure_bootloader "/mnt" "/dev/mapper/${INS_ROOT_CONTAINER}"
+
+set_locale "/mnt"
+
+set_hostname "${INS_HOSTNAME}" "/mnt"
+
+if [ "x${NET_INTERFACE}" != "x" ]; then
+    setup_nmfile_8021x "${NET_INTERFACE}" "${NET_USERNAME}" "${NET_USERPASS}" "/mnt/etc/NetworkManager/system-connections"
+fi
+
+add_user "/mnt" "${INS_USERNAME}" "${INS_USERPASS}" "1000" "Stephen Brown II"
+echo "root:${INS_ROOTPASS}" | chpasswd --root /mnt
+
+setup_snapper "/mnt"
+
+umount -R /mnt
+
+reboot

@@ -10,7 +10,7 @@
   when: hostname is defined
 
 - include: shell.yml
-  #- include: user.yml
+- include: user.yml
   #- include: sudo.yml
   #- include: packages.yml
   #- include: journal.yml

@@ -1,13 +1,18 @@
 hostname: raxnuc
 
+user_password: alreadyset
+
 user:
     name: stephen
     uid: 1000
     group: stephen
+    groups: ''
     shell: /usr/bin/zsh
     email: Stephen.Brown2@gmail.com
     work_email: stephen.brownii@rackspace.com
-    log_dir: log
+    log:
+        dir: log
+        rotate: 8
     xdg_dirs: yes
 
 nameservers:

@@ -50,6 +50,9 @@ aur:
         #- myrepos
         - ctmg
 
+journal:
+    max_size: 500M
+
 nameservers:
     - 1.1.1.1        # Cloudflare
     - 1.0.0.1        # Cloudflare

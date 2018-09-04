@@ -6,3 +6,4 @@
   #    prompt: "Enter desired user password"
   roles:
     - { role: base, tags: ['base'] }
+    - { role: vscode, tags: ['dev'] }

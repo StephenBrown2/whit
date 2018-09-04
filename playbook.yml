@@ -7,3 +7,4 @@
   roles:
     - { role: base, tags: ['base'] }
     - { role: vscode, tags: ['dev'] }
+    - { role: google-chrome, tags: ['browser'] }

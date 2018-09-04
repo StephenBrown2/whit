@@ -1,0 +1,10 @@
+---
+- name: Configure Chrome to allow Symantec certs
+  # this is temporary and will stop working with Chrome v73 on 1 Jan 2019,
+  # at which point all Symantec PKI will be completely distrusted.
+  copy:
+    src: AcceptSymantecCerts.json
+    dest: /etc/opt/chrome/policies/managed/
+
+- name: Install Google Chrome Dev
+  aur: name=google-chrome-dev user={{ user.name }}

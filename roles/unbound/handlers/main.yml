@@ -1,6 +1,0 @@
----
-- name: restart unbound
-  service: name=unbound state=restarted
-
-- name: generate resolv.conf
-  command: resolvconf -u

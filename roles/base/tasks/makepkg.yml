@@ -1,3 +1,0 @@
----
-- name: Set makepkg to use all vcpus
-  template: src=makepkg.conf.j2 dest=/etc/makepkg.conf

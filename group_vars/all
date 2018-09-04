@@ -1,116 +1,14 @@
+hostname: raxnuc
+
 user:
     name: stephen
-    uid: 1111
+    uid: 1000
     group: stephen
     shell: /usr/bin/zsh
     email: Stephen.Brown2@gmail.com
     work_email: stephen.brownii@rackspace.com
     log_dir: log
     xdg_dirs: yes
-
-#dotfiles:
-#  url: git@github.com:StephenBrown2/dotfiles.git
-#  destination: git/hub/dotfiles
-#  rcup_flags: -fx README.md -x .gitignore
-
-aur:
-    dir: aur
-    packages:
-        - pacaur
-        - downgrade
-        - longoverdue
-        - zplug
-
-ssh:
-    port: 22
-    generate_user_key: True
-    key_type: ed25519
-    key_bits: 9001
-    enable_sshd: True
-    allowed_users:
-        - vagrant
-
-network:
-    spoof_mac: False
-    conn_check:
-        interval: 0
-    trusted_uuid:
-        - c471d245-96b8-3e08-90e9-94263b589b00
-        - a5e451a8-4b34-4c4e-bb37-a70462f24863
-        - b9ea1517-9108-4db6-9dd8-71f8a6218bf8
-        - 037c99a9-e8fc-450a-ae28-0f27c17bd69b
-
-
-editors:
-  #  - sublime-text-dev
-  #  - sublime-url-handler
-    - atom-editor-beta-bin
-    - woff2-git  # AUR dep for ttf-atom-file-icons
-    - ttf-atom-file-icons
-
-atom_packages:
-    - atom-jinja2
-    - busy-signal
-    - editorconfig
-    - git-blame
-    - git-plus
-    - intentions
-    - language-ansible
-    - language-apache
-    - language-docker
-    - language-nginx
-    - language-robot-framework
-    - lines
-    - linter
-    - linter-mypy
-    - linter-pylama
-    - linter-pylint
-    - linter-shellcheck
-    - linter-ui-default
-    - local-history
-    - MagicPython
-    - markdown-scroll-sync
-    - minimap
-    - minimap-git-diff
-    - multi-wrap-guide
-    - pigments
-    - platformio-ide-terminal
-    - python-isort
-    - python-tools
-    - restart-atom
-    - split-diff
-
-video_drivers:
-    - xf86-video-intel
-    - libva-intel-driver
-
-base_packages:
-    - base-devel
-    - bc
-    - git
-    - gnupg
-    - jq
-    - lsof
-    - moreutils
-    - pv
-    - python-docs
-    - python-keyring
-    - python-secretstorage
-    - python2-docs
-    - reflector
-    - rsync
-    - tmux
-    - xdg-utils
-    - lastpass-cli
-
-filesystem_packages:
-    - btrfs-progs
-    - dosfstools
-    - hfsprogs
-    - ntfs-3g
-    - exfat-utils
-
-bootloader: systemd-boot
 
 nameservers:
     - 1.1.1.1        # Cloudflare
@@ -124,23 +22,3 @@ nameservers:
     - 208.67.220.220 # OpenDNS
     - 2001:4860:4860::8888 # Google IPv6
     - 2001:4860:4860::8844 # Google IPv6
-
-cron: fcron
-
-video_drivers:
-    - xf86-video-intel
-
-firejail:
-    blacklist:
-        - ~/.local/share/lpass
-        - ~/.password-store
-        - ~/.contacts
-        - ~/.keys
-
-luks:
-    device: /dev/sda2
-    dmname: cryptroot
-
-udisks:
-    auto_mount: False
-    shared_mount: True

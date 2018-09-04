@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-if [ -x /usr/bin/fcron ]; then
-  echo "fcron has been installed."
-  echo "Running: fcrontab ${@:1}"
-  fcrontab ${@:1}
-else
-  echo "fcrontab not found."
-fi

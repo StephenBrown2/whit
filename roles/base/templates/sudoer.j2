@@ -1,0 +1,9 @@
+## {{ ansible_managed }}
+##
+## User-specific privilege specification
+##
+
+{{ user.name }} ALL=(ALL) ALL
+{% for entry in passwordless_sudo %}
+{{ user.name }} ALL=(ALL) NOPASSWD:{{ entry }}
+{% endfor %}

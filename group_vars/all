@@ -7,6 +7,7 @@ user:
     uid: 1000
     group: stephen
     groups: ''
+    sudoer: true
     shell: /usr/bin/zsh
     email: Stephen.Brown2@gmail.com
     work_email: stephen.brownii@rackspace.com
@@ -14,6 +15,9 @@ user:
         dir: log
         rotate: 8
     xdg_dirs: yes
+
+passwordless_sudo:
+    - /usr/bin/pacman
 
 nameservers:
     - 1.1.1.1        # Cloudflare

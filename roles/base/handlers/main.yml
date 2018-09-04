@@ -1,3 +1,7 @@
 ---
 - name: stop systemd per-user instance
   service: name="user@{{ user.uid }}" state=stopped
+- name: restart paccache
+  service: name=paccache.timer state=restarted
+- name: reload systemd config
+  command: systemctl daemon-reload

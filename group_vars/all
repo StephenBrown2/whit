@@ -19,6 +19,37 @@ user:
 passwordless_sudo:
     - /usr/bin/pacman
 
+base_packages:
+    - base-devel
+    - coreutils
+    - dateutils
+    - fwupd
+    - git
+    - glances
+    - jq
+    - lsof
+    - moreutils
+    - pacman-contrib
+    - pv
+    - python-keyring
+    - python-pipenv
+    - python-secretstorage
+    - reflector
+    - rsync
+    - screen
+    - tmux
+    - units
+
+aur:
+    dir: aur
+    packages:
+        - yay
+        - downgrade
+        - zplug
+        #- miller
+        #- myrepos
+        - ctmg
+
 nameservers:
     - 1.1.1.1        # Cloudflare
     - 1.0.0.1        # Cloudflare

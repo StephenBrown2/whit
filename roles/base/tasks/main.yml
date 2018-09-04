@@ -12,5 +12,5 @@
 - include: shell.yml
 - include: user.yml
 - include: sudo.yml
-  #- include: packages.yml
+- include: packages.yml
   #- include: journal.yml

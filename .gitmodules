@@ -1,13 +1,3 @@
 [submodule "library/ansible-aur"]
 	path = library/ansible-aur
 	url = git@github.com:pigmonkey/ansible-aur.git
-[submodule "vagrant/packer-io"]
-	path = vagrant/packer-io
-	url = git@github.com:elasticdog/packer-arch.git
-[submodule "roles/networkmanager/files/nmtrust"]
-	path = roles/networkmanager/files/nmtrust
-	url = git@github.com:StephenBrown2/nmtrust.git
-	branch = count_untrusted
-[submodule "roles/atom"]
-	path = roles/atom
-	url = git@github.com:jgkim/ansible-role-atom.git

@@ -43,12 +43,13 @@ base_packages:
 aur:
     dir: aur
     packages:
-        - yay
+        - ctmg
         - downgrade
-        - zplug
+        - gitkraken
         #- miller
         #- myrepos
-        - ctmg
+        - yay
+        - zplug
 
 journal:
     max_size: 500M

@@ -6,6 +6,7 @@
   #    prompt: "Enter desired user password"
   roles:
     - { role: base, tags: ['base'] }
+    - { role: firmware, tags: ['firmware'] }
     - { role: microcode, tags: ['microcode'] }
     - { role: ssh, tags: ['ssh'] }
     - { role: vscode, tags: ['dev'] }

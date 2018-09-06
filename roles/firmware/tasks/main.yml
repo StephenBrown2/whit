@@ -1,0 +1,6 @@
+---
+- name: Install 'missing' firmware modules
+  aur: name={{ item }} user={{ user.name }}
+  with_items:
+    - aic94xx-firmware
+    - wd719x-firmware

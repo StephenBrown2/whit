@@ -88,6 +88,16 @@ ssh:
     # user_key: # TODO: Set this up via ansible-vault
     enable_sshd: False
 
+fonts:
+    base:
+        - terminus-font
+        - noto-fonts
+        - noto-fonts-emoji
+        - ttf-ubuntu-font-family
+    aur:
+        - nerd-fonts-complete
+        - otf-montserrat
+
 nameservers:
     - 1.1.1.1        # Cloudflare
     - 1.0.0.1        # Cloudflare

@@ -13,3 +13,4 @@
     - { role: google-chrome, tags: ['browser'] }
     - { role: dotfiles, tags: ['dotfiles'] }
     - { role: ssd, tags: ['ssd'] }
+    - { role: fonts, tags: ['fonts'] }

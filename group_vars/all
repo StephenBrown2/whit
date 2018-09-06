@@ -2,6 +2,11 @@ hostname: raxnuc
 
 timezone: America/Chicago
 
+locale: en_US.UTF-8
+
+keymap:
+    model: logitech_base
+
 user_password: alreadyset
 
 user:

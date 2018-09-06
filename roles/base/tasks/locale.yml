@@ -1,0 +1,21 @@
+---
+- name: Generate locale
+  locale_gen:
+    name: "{{ locale }}"
+    state: present
+
+- name: Set locale
+  shell: localectl set-locale {{ locale }}
+
+- name: Set keymap
+  shell: localectl set-keymap us
+
+- name: Set x11 keymap layout
+  shell: localectl set-x11-keymap us {{ keymap.model }}
+
+- name: Set vconsole font
+  lineinfile:
+    dest: /etc/vconsole.conf
+    line: FONT=Lat2-Terminus16
+    state: present
+    create: yes

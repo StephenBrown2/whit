@@ -10,6 +10,7 @@
   when: hostname is defined
 
 - include: timedate.yml
+- include: locale.yml
 - include: shell.yml
 - include: user.yml
 - include: sudo.yml

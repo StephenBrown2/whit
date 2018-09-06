@@ -33,6 +33,8 @@ base_packages:
     - fwupd
     - git
     - glances
+    - gptfdisk
+    - grml-zsh-config
     - jq
     - lsof
     - moreutils
@@ -46,7 +48,9 @@ base_packages:
     - rsync
     - screen
     - shellcheck
+    - tilix
     - tmux
+    - vim
     - units
 
 aur:

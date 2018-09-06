@@ -6,5 +6,6 @@
   #    prompt: "Enter desired user password"
   roles:
     - { role: base, tags: ['base'] }
+    - { role: microcode, tags: ['microcode'] }
     - { role: vscode, tags: ['dev'] }
     - { role: google-chrome, tags: ['browser'] }

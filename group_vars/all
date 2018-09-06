@@ -81,6 +81,13 @@ vscode:
         - Tyriar.sort-lines
         - redhat.vscode-yaml
 
+ssh:
+    port: 22
+    sshfs: true
+    autossh: false
+    # user_key: # TODO: Set this up via ansible-vault
+    enable_sshd: False
+
 nameservers:
     - 1.1.1.1        # Cloudflare
     - 1.0.0.1        # Cloudflare

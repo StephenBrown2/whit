@@ -1,0 +1,30 @@
+# {{ ansible_managed }}
+
+AllowUsers {{ user.name }}
+AuthenticationMethods publickey
+ChallengeResponseAuthentication no
+LoginGraceTime 1m
+PasswordAuthentication no
+PermitRootLogin no
+Port {{ ssh.port }}
+PrintLastLog yes
+PrintMotd no
+Protocol 2
+PubkeyAuthentication yes
+Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO
+UsePrivilegeSeparation sandbox
+X11Forwarding no
+
+# Preferred algorithms from:
+# https://wiki.mozilla.org/Security/Guidelines/OpenSSH#Modern_.28OpenSSH_6.7.2B.29
+KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
+
+# Supported HostKey algorithms by order of preference.
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+
+# LogLevel VERBOSE logs user's key fingerprint on login. Needed to have a clear audit track of which key was using to log in.
+LogLevel VERBOSE

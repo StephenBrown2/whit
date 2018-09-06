@@ -1,5 +1,7 @@
 hostname: raxnuc
 
+timezone: America/Chicago
+
 user_password: alreadyset
 
 user:
@@ -58,6 +60,9 @@ aur:
 
 journal:
     max_size: 500M
+
+ntp:
+    server: time.rackspace.com
 
 vscode:
     extensions:

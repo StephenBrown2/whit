@@ -9,6 +9,7 @@
   hostname: name={{ hostname }}
   when: hostname is defined
 
+- include: timedate.yml
 - include: shell.yml
 - include: user.yml
 - include: sudo.yml

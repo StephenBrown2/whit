@@ -23,8 +23,8 @@
         dest=/etc/fonts/conf.d/10-hinting-slight.conf
         state=link
 
-- name: Push font substitutions
-  copy: src=local.conf dest=/etc/fonts/local.conf
+# - name: Push font substitutions
+#   copy: src=local.conf dest=/etc/fonts/local.conf
 
 - name: Install base fonts
   pacman: name={{ item }} state=present

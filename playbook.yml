@@ -10,3 +10,4 @@
     - { role: ssh, tags: ['ssh'] }
     - { role: vscode, tags: ['dev'] }
     - { role: google-chrome, tags: ['browser'] }
+    - { role: dotfiles, tags: ['dotfiles'] }

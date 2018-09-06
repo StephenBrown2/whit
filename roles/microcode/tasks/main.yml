@@ -1,0 +1,9 @@
+---
+- name: Insert ucode in systemd-boot config
+  lineinfile:
+      path: /boot/loader/entries/arch.conf
+      line: initrd /intel-ucode.img
+      insertafter: linux 
+- name: Install Intel microcode
+  pacman: name=intel-ucode state=present
+  when: 'GenuineIntel' in ansible_processor

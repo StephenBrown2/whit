@@ -4,34 +4,18 @@
     path: /etc/systemd/system.conf.d
     state: directory
 
-- name: Increase nofile ulimit to compile vscode
-  pam_limits:
-    comment: Increase open files for compiling large programs
-    dest: /etc/systemd/system.conf.d/limits.conf
-    domain: "{{ user.name }}"
-    limit_type: hard
-    limit_item: nofile
-    value: 1000000
-    use_max: yes
-  notify:
-    - reload systemd config
+- name: Install VSCode
+  aur: name=visual-studio-code-bin user={{ user.name }}
 
-- name: Check nofile ulimit
-  shell: ulimit -n
-  register: nofile_limit
+- name: Check installed extensions
+  shell: code --list-extensions
+  register: vscode_extensions
+  become: yes
+  become_user: "{{ user.name }}"
 
-- name: MUST REBOOT
-  debug:
-    msg: "Must reboot to enable new nofile limit and successfully compile vscode"
-  when: nofile_limit.stdout|int < 1000000
-
-- debug:
-    var: nofile_limit.stdout
-  when: nofile_limit.stdout|int < 1000000
-
-- name: Install nodejs-lts-carbon and VSCode
-  aur: name={{ item }} user={{ user.name }}
-  with_items:
-    - nodejs-lts-carbon
-    - code
-  when: nofile_limit.stdout|int >= 1000000
+- name: Install VSCode Extensions
+  shell: code --install-extension {{ item }}
+  with_items: "{{ vscode.extensions }}"
+  when: item not in vscode_extensions.stdout_lines
+  become: yes
+  become_user: "{{ user.name }}"

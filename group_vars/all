@@ -30,6 +30,7 @@ base_packages:
     - lsof
     - moreutils
     - pacman-contrib
+    - prettier
     - pv
     - python-keyring
     - python-pipenv
@@ -37,6 +38,7 @@ base_packages:
     - reflector
     - rsync
     - screen
+    - shellcheck
     - tmux
     - units
 
@@ -48,11 +50,36 @@ aur:
         - gitkraken
         #- miller
         #- myrepos
+        - python-toml  # required by python-black
+        - python-black
+        - shfmt
         - yay
         - zplug
 
 journal:
     max_size: 500M
+
+vscode:
+    extensions:
+        - vscoss.vscode-ansible
+        - ph-hawkins.arc-plus
+        - JakeWilson.vscode-cdnjs
+        - bierner.color-info
+        - PeterJausovec.vscode-docker
+        - dbaeumer.vscode-eslint
+        - axosoft.gitkraken-glo
+        - eamodio.gitlens
+        - ms-vscode.Go
+        - robertohuertasm.vscode-icons
+        - zhuangtongfa.Material-theme
+        - mermade.openapi-lint
+        - derek-nextty.openapi-viewer
+        - esbenp.prettier-vscode
+        - ms-python.python
+        - foxundermoon.shell-format
+        - timonwong.shellcheck
+        - Tyriar.sort-lines
+        - redhat.vscode-yaml
 
 nameservers:
     - 1.1.1.1        # Cloudflare

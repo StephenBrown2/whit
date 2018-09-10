@@ -48,6 +48,7 @@ base_packages:
     - rsync
     - screen
     - shellcheck
+    - termite
     - tilix
     - tmux
     - vim

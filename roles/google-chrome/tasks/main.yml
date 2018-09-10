@@ -6,5 +6,5 @@
     src: AcceptSymantecCerts.json
     dest: /etc/opt/chrome/policies/managed/
 
-- name: Install Google Chrome Dev
-  aur: name=google-chrome-dev user={{ user.name }}
+- name: Install Google Chrome
+  aur: name=google-chrome user={{ user.name }}

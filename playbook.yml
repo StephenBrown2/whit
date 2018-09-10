@@ -17,3 +17,4 @@
     - { role: xdg, tags: ['xdg'] }
     - { role: video, tags: ['video'] }
     - { role: media, tags: ['media'] }
+    - { role: lightdm, tags: ['lightdm'], when: "display_manager == 'lightdm'" }

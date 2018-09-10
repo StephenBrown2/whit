@@ -120,6 +120,8 @@ video_drivers:
     - xf86-video-intel
     - vulkan-intel
 
+display_manager: lightdm
+
 nameservers:
     - 1.1.1.1        # Cloudflare
     - 1.0.0.1        # Cloudflare

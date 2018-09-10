@@ -82,6 +82,7 @@ vscode:
         - JakeWilson.vscode-cdnjs
         - bierner.color-info
         - PeterJausovec.vscode-docker
+        - EditorConfig.EditorConfig
         - dbaeumer.vscode-eslint
         - axosoft.gitkraken-glo
         - eamodio.gitlens
@@ -92,6 +93,7 @@ vscode:
         - derek-nextty.openapi-viewer
         - esbenp.prettier-vscode
         - ms-python.python
+        - lextudio.restructuredtext
         - foxundermoon.shell-format
         - timonwong.shellcheck
         - Tyriar.sort-lines

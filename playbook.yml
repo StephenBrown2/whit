@@ -16,3 +16,4 @@
     - { role: fonts, tags: ['fonts'] }
     - { role: xdg, tags: ['xdg'] }
     - { role: video, tags: ['video'] }
+    - { role: media, tags: ['media'] }

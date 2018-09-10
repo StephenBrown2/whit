@@ -14,3 +14,4 @@
     - { role: dotfiles, tags: ['dotfiles'] }
     - { role: ssd, tags: ['ssd'] }
     - { role: fonts, tags: ['fonts'] }
+    - { role: xdg, tags: ['xdg'] }

@@ -63,6 +63,7 @@ aur:
         #- myrepos
         - python-toml  # required by python-black
         - python-black
+        - rambox-bin
         - shfmt
         - yay
         - zplug

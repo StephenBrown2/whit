@@ -1,0 +1,29 @@
+---
+- name: Install MTR
+  pacman: name=mtr-gtk state=present
+
+- name: Install iproute2
+  pacman: name=iproute2 state=present
+
+- name: Install bind-tools
+  pacman: name=bind-tools state=present
+
+- name: Install whois
+  pacman: name=whois state=present
+
+- name: Install netcat
+  pacman: name=gnu-netcat state=present
+
+- name: Install sshuttle
+  pacman: name=sshuttle state=present
+
+- name: Install pdsh
+  aur: name=pdsh user={{ user.name }}
+  tags:
+    - aur
+
+- name: Install nethogs
+  pacman: name=nethogs state=present
+
+- name: Install speedtest-cli
+  pacman: name=speedtest-cli state=present

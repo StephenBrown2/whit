@@ -18,3 +18,4 @@
     - { role: cinnamon, tags: ['cinnamon'], when: "desktop_environment == 'cinnamon'" }
     - { role: passwords, tags: ['passwords'] }
     - { role: iptables, tags: ['iptables'] }
+    - { role: nettools, tags: ['nettools'] }

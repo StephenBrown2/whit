@@ -148,7 +148,7 @@ rax:
 network:
     spoof_mac: False
     conn_check:
-        # uri: https://www.rackspace.com/
+        # uri: http://httpbin.org/get?q=NetworkManager%20is%20online
         interval: 0
         # response: Rackspace Hosting
     trusted_uuid:

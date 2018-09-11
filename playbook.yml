@@ -1,9 +1,6 @@
 ---
 - hosts: localhost
   become: yes
-  #vars_prompt:
-  #  - name: user_password
-  #    prompt: "Enter desired user password"
   roles:
     - { role: base, tags: ['base'] }
     - { role: firmware, tags: ['firmware'] }

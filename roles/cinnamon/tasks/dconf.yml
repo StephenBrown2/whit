@@ -1,0 +1,17 @@
+---
+- name: Creating cinnamon.d directory for DConf
+  file: path=/etc/dconf/db/cinnamon.d state=directory mode=0755
+
+- name: Configuring Cinnamon icons
+  copy: src=cinnamon.d/icons dest=/etc/dconf/db/cinnamon.d/00-icons mode=0644
+  notify: update DConf database
+
+- name: Configuring Cinnamon fonts
+  copy: src=cinnamon.d/fonts dest=/etc/dconf/db/cinnamon.d/00-fonts mode=0644
+  notify: update DConf database
+
+- name: Configuring DConf
+  lineinfile: path=/etc/dconf/profile/user line={{ item }} create=yes mode=0644
+  with_items:
+    - "user-db:user"
+    - "system-db:cinnamon"

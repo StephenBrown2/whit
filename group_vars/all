@@ -99,6 +99,7 @@ vscode:
         - mermade.openapi-lint
         - derek-nextty.openapi-viewer
         - esbenp.prettier-vscode
+        - GitHub.vscode-pull-request-github
         - ms-python.python
         - lextudio.restructuredtext
         - foxundermoon.shell-format
@@ -128,6 +129,30 @@ video_drivers:
     - vulkan-intel
 
 display_manager: lightdm
+
+desktop_environment: cinnamon
+
+rax:
+    sso_user: step7212
+    sso_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          64393365323134623665366132373538623632313230323838613137356663346365346466393436
+          6336323363643037316239363237353266666463643161630a323836323563313730363764636133
+          66666136633331346266373633623730393364303063643865323266313635336163353535333538
+          6239613863356335650a316533333837356561366662616433396338393930386330363030336330
+          32336264323163636264343633613838316261333264313836313962356238333935323538393438
+          3366323032353238373631313833616139616132616632626336
+    int_user: Step17212
+    network_uuid: 7c081ea3-9836-476b-9a1f-7685ef107568
+
+network:
+    spoof_mac: False
+    conn_check:
+        # uri: https://www.rackspace.com/
+        interval: 0
+        # response: Rackspace Hosting
+    trusted_uuid:
+        - 7c081ea3-9836-476b-9a1f-7685ef107568
 
 nameservers:
     - 1.1.1.1        # Cloudflare

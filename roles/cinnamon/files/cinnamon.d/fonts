@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+[org/cinnamon/desktop/interface]
+font-name='Montserrat Light 9'
+
+[org/cinnamon/desktop/wm/preferences]
+titlebar-font='Montserrat 10'
+
+[org/gnome/desktop/interface]
+document-font-name='Montserrat 11'
+monospace-font-name='FantasqueSansMono Nerd Font 11'
+
+[org/nemo/desktop]
+font='Montserrat Light 10'

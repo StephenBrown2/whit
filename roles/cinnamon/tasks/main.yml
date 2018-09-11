@@ -1,0 +1,25 @@
+---
+- name: Install Cinnamon
+  pacman: name=cinnamon state=present
+
+- name: Install Arc theme and icons
+  pacman: name={{ item }}
+  with_items:
+    - arc-gtk-theme
+    - arc-icon-theme
+
+- name: Install Paper icon set
+  aur: name=paper-icon-theme user={{ user.name }}
+
+- name: Get current inheritance
+  shell: "grep Inherits /usr/share/icons/Arc/index.theme"
+  register: arc_theme_inherits
+
+- name: Set Arc icon theme inheritence to be Paper
+  replace:
+    path: /usr/share/icons/Arc/index.theme
+    regexp: '^Inherits=(.*)'
+    replace: 'Inherits=Paper,\1'
+  when: '"Paper" not in arc_theme_inherits.stdout'
+
+- include: dconf.yml

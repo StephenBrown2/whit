@@ -1,0 +1,26 @@
+[connection]
+id=Rackspace 802.1x
+uuid={{ rax.network_uuid }}
+type=ethernet
+interface-name={{ ansible_default_ipv4.interface }}
+permissions=
+timestamp={{ ansible_date_time.epoch }}
+
+[ethernet]
+mac-address-blacklist=
+
+[802-1x]
+eap=peap;
+identity={{ rax.sso_user }}
+password={{ rax.sso_pass }}
+phase1-peapver=0
+phase2-auth=mschapv2
+
+[ipv4]
+dns-search=
+method=auto
+
+[ipv6]
+addr-gen-mode=stable-privacy
+dns-search=
+method=auto

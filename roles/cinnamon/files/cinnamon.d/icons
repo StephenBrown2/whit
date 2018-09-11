@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[org/cinnamon/desktop/interface]
+cursor-theme='Paper'
+icon-theme='Arc'
+gtk-theme='Arc-Dark'
+
+[org/cinnamon/desktop/wm/preferences]
+theme='Arc-Dark'
+
+[org/cinnamon/theme]
+name='Arc-Dark'

@@ -17,3 +17,4 @@
     - { role: lightdm, tags: ['lightdm'], when: "display_manager == 'lightdm'" }
     - { role: cinnamon, tags: ['cinnamon'], when: "desktop_environment == 'cinnamon'" }
     - { role: passwords, tags: ['passwords'] }
+    - { role: iptables, tags: ['iptables'] }

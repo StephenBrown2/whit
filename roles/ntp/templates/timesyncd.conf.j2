@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+[Time]
+NTP={% if ntp.server is defined %}{{ ntp.server }}
+{% else %}us.pool.ntp.org
+{% endif %}
+FallbackNTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org

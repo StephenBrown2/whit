@@ -19,3 +19,4 @@
     - { role: passwords, tags: ['passwords'] }
     - { role: iptables, tags: ['iptables'] }
     - { role: nettools, tags: ['nettools'] }
+    - { role: ntp, tags: ['ntp'] }

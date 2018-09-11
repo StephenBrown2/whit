@@ -1,0 +1,7 @@
+---
+- name: Set timezone
+  when: timezone is defined
+  timezone:
+    name: "{{ timezone }}"
+  tags:
+    - timezone

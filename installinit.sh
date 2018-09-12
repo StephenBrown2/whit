@@ -166,47 +166,8 @@ sed -i 's!LABEL=swap!/dev/mapper/swap!' /mnt/etc/fstab
 ## Phase 2
 cat <<ENDPHASE2 > /mnt/phase2.sh
 #!/usr/bin/env bash
-echo "Set root password:"
-passwd
-
-echo "Enabling en_US locales"
-sed -i 's/^#en_US/en_US/' /etc/locale.gen
-
-echo "Generating locales"
-locale-gen
-
-echo "Setting locales with localectl"
-localectl set-locale LANG=en_US.UTF-8
-
-echo "Enabling NTP"
-timedatectl set-ntp true
-
-echo "Setting timezone to America/Chicago"
-timedatectl set-timezone America/Chicago
-
-echo "Setting hostname to ${MYHOSTNAME}"
-hostnamectl set-hostname ${MYHOSTNAME}
-
-echo "Writing /etc/hosts file"
-cat <<EOF >> /etc/hosts
-127.0.0.1  localhost
-::1        localhost
-127.0.1.1  ${MYHOSTNAME}.localdomain ${MYHOSTNAME}
-EOF
-
-echo "Exiting systemd-nspawn"
-poweroff
-ENDPHASE2
-
-chmod +x /mnt/phase2.sh
-
-ekho "Log in to systemd shell as root and run /phase2.sh"
-systemd-nspawn -b -E MYHOSTNAME=${MYHOSTNAME} -D /mnt
-
-## Phase 3
-cat <<'ENDPHASE3' > /mnt/phase3.sh
-#!/usr/bin/env bash
 ALWAYSPAUSE=0
+
 function ekho {
   if [[ ${ALWAYSPAUSE} != 0 ]]; then
     echo "Did the previous command execute successfully (y/n)? "
@@ -219,33 +180,14 @@ function ekho {
   echo "${@}"
 }
 
-echo "Adding sudo group"
-groupadd -g 100 sudo
-
-ekho "Adding stephen user"
-useradd -m -c "Stephen Brown II" -u 1000 -U -G sudo -s /usr/bin/zsh stephen
-
-ekho "Set stephen's password"
-passwd stephen
-
-ekho "Adding stephen to sudoers.d"
-mkdir /etc/sudoers.d
-echo 'stephen ALL=(ALL) ALL' > /etc/sudoers.d/stephen
-echo 'stephen ALL=(ALL) NOPASSWD:/usr/bin/pacman' >> /etc/sudoers.d/stephen
-
-ekho "Installing base-devel and other useful utilities"
-pacman -Syu --needed base-devel gptfdisk zsh vim terminus-font intel-ucode git go
+echo "Set root password:"
+passwd
 
 ekho "Configuring /etc/mkinitcpio.conf"
 sed -i -e 's/^MODULES=.*/MODULES=(i915)/' /etc/mkinitcpio.conf
 sed -i -e 's/^HOOKS=/#HOOKS=/' /etc/mkinitcpio.conf
 sed -i -e '/#HOOKS=/a HOOKS=(base systemd sd-vconsole autodetect modconf keyboard block filesystems btrfs sd-encrypt fsck)' /etc/mkinitcpio.conf
 grep -v '^#' /etc/mkinitcpio.conf
-
-ekho "Setting vconsole font"
-cat <<EOF >> /etc/vconsole.conf
-FONT=Lat2-Terminus16
-EOF
 
 ekho "Installing systemd-boot in /boot"
 bootctl --path=/boot install
@@ -277,94 +219,14 @@ initrd /initramfs-linux.img
 options luks.allow-discards root=/dev/mapper/system rootflags=subvol=@ rw
 EOF
 
-ekho "Installing yay from AUR using git as stephen"
-su - stephen -c 'git clone https://aur.archlinux.org/yay.git ~/yay; cd ~/yay; makepkg -fi; cd ~; rm -rf yay'
+echo "Exiting systemd-nspawn"
+poweroff
+ENDPHASE2
 
-ekho "Installing more things including AUR packages"
-su - stephen -c 'yay -Syu sddm cinnamon arc-gtk-theme arc-icon-theme paper-icon-theme noto-fonts-emoji ttf-ubuntu-font-family otf-montserrat nerd-fonts-complete kitty aic94xx-firmware wd719x-firmware grml-zsh-config'
+chmod +x /mnt/phase2.sh
 
-ekho "Fixing Arc icon theme inheritence"
-sed -i -e 's/Inherits=Moka/Inherits=Paper/' /usr/share/icons/Arc/index.theme
-
-ekho "Setting Cinnamon DE dconf icons keyfile"
-mkdir -p /etc/dconf/db/user.d
-cat <<EOF >> /etc/dconf/db/user.d/icons.txt
-[org/cinnamon/desktop/interface]
-cursor-theme='Paper'
-icon-theme='Arc'
-gtk-theme='Arc-Dark'
-[org/cinnamon/desktop/wm/preferences]
-theme='Arc-Dark'
-[org/cinnamon/theme]
-name='Arc-Dark'
-EOF
-
-ekho "Setting Cinnamon DE dconf fonts keyfile"
-cat <<EOF >> /etc/dconf/db/user.d/fonts.txt
-[org/cinnamon/desktop/interface]
-font-name='Montserrat Light 9'
-[org/cinnamon/desktop/wm/preferences]
-titlebar-font='Montserrat 10'
-[org/gnome/desktop/interface]
-document-font-name='Montserrat 11'
-monospace-font-name='FantasqueSansMono Nerd Font 11'
-[org/nemo/desktop]
-font='Montserrat Light 10'
-EOF
-
-ekho "Enabling sddm without systemd"
-ln -s /usr/lib/systemd/system/sddm.service /etc/systemd/system/display-manager.service
-
-ekho "Enabling NetworkManager without systemd"
-ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/dbus-org.freedesktop.NetworkManager.service
-ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/multi-user.target.wants/NetworkManager.service
-ln -s /usr/lib/systemd/system/NetworkManager-dispatcher.service /etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service
-
-ekho "Configuring NetworkManager 802.1x connection"
-ip a
-read -p "Interface: " interface
-read -p "Username: " identity
-read -s -p "Password: " password
-cat <<EOF > /etc/NetworkManager/system-connections/RS-802-1x
-[connection]
-id=RS-802-1x
-uuid=$(uuidgen)
-type=ethernet
-interface-name=${interface}
-permissions=
-timestamp=$(date +%s)
-
-[ethernet]
-mac-address-blacklist=
-
-[802-1x]
-eap=peap;
-identity=${identity}
-password=${password}
-phase1-peapver=0
-phase2-auth=mschapv2
-system-ca-certs=true
-
-[ipv4]
-dns-search=
-method=auto
-
-[ipv6]
-addr-gen-mode=stable-privacy
-dns-search=
-method=auto
-EOF
-chmod 600 /etc/NetworkManager/system-connections/RS-802-1x
-
-ekho "Setting keyserver options"
-sed -i 's@keyserver hkp.*@keyserver hkps://hkps.pool.sks-keyservers.net:443@' /etc/pacman.d/gnupg/gpg.conf
-sed -i 's@keyserver-options@keyserver-options auto-key-retrieve@' /etc/pacman.d/gnupg/gpg.conf
-ENDPHASE3
-
-chmod +x /mnt/phase3.sh
-
-ekho "Entering arch-chroot to run /phase3.sh"
-arch-chroot /mnt /phase3.sh
+ekho "Log in to systemd shell as root and run /phase2.sh"
+systemd-nspawn -b -E MYHOSTNAME=${MYHOSTNAME} -D /mnt
 
 ekho "Unmounting /mnt"
 umount -R /mnt

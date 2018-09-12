@@ -9,6 +9,17 @@
   hostname: name={{ hostname }}
   when: hostname is defined
 
+- name: Set the hosts file
+  lineinfile:
+    path: /etc/hosts
+    create: yes
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - 127.0.0.1  localhost
+    - ::1        localhost
+    - 127.0.1.1  {{ hostname }}.localdomain {{ hostname }}
+
 - include: timezone.yml
 - include: locale.yml
 - include: shell.yml

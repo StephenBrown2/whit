@@ -9,7 +9,7 @@
     name: "{{ user.name }}"
     group: "{{ user.group }}"
     comment: "{{ user.given_name }}"
-    password: "{{ user.password|password_hash('sha512') }}"
+    password: "{{ user.password|string|password_hash('sha512') }}"
     shell: "{{ user.shell }}"
     update_password: on_create
     uid: "{{ user.uid }}"

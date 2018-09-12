@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+
+{% for config in lookup('fileglob', 'config.d/*.conf', wantlist=True) %}
+Include config.d/{{ config | basename }}
+
+{% endfor %}
+Host *
+    AddKeysToAgent yes
+    ForwardX11Trusted yes
+    GSSAPIAuthentication no
+    HashKnownHosts no
+    ProxyJump bastion
+    ServerAliveCountMax 10
+    ServerAliveInterval 30
+    StrictHostKeyChecking no
+    TCPKeepAlive yes
+    UseRoaming no
+    VerifyHostKeyDNS no
+    VisualHostKey yes

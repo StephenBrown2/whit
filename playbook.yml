@@ -20,3 +20,4 @@
     - { role: iptables, tags: ['iptables'] }
     - { role: nettools, tags: ['nettools'] }
     - { role: ntp, tags: ['ntp'] }
+    - { role: rackspace, tags: ['work'] }

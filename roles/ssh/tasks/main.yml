@@ -45,12 +45,74 @@
               state=present
               line="export SSH_ASKPASS=\"/usr/lib/ssh/x11-ssh-askpass\""
 
-- name: Make directory for user SSH key
-  file: path=/home/{{ user.name }}/.ssh state=directory owner={{ user.name }} group={{ user.group }} mode="u=rwx,go="
+- name: Ensure proper permissions on user SSH dir
+  file:
+    path: /home/{{ user.name }}/.ssh
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0700
 
-- name: Install user SSH key
-  copy: src={{ ssh.user_key }} dest=/home/{{ user.name }}/.ssh/id_rsa mode="u=rw,go=" owner={{ user.name }} group={{ user.group }}
-  when: ssh.user_key is defined
+- name: Push SSH config
+  template:
+    src: ssh_config.j2
+    dest: /home/{{ user.name }}/.ssh/config
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0600
+
+- name: Make SSH config dir
+  file:
+    path: /home/{{ user.name }}/.ssh/config.d
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0700
+  with_fileglob: "config.d/*.conf"
+
+- name: Copy ssh conf files
+  copy:
+    src: "{{ item }}"
+    dest: /home/{{ user.name }}/.ssh/config.d/{{ item | basename }}
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0600
+  with_fileglob: "config.d/*.conf"
+
+- name: Make socket dir
+  file:
+    path: /home/{{ user.name }}/.ssh/sock
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0755
+
+- name: Make directory for user SSH key(s)
+  file:
+    path: /home/{{ user.name }}/.ssh/keys
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0700
+  when: ssh.user_keys is defined
+
+- name: Install user SSH key(s)
+  copy:
+    src: "{{ item }}"
+    dest: /home/{{ user.name }}/.ssh/keys/{{ item }}
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0600
+  with_items: "{{ ssh.user_keys }}"
+  when: ssh.user_keys is defined
+
+- name: Install user public SSH key(s)
+  copy:
+    src: "{{ item }}.pub"
+    dest: /home/{{ user.name }}/.ssh/keys/{{ item }}.pub
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0644
+  with_items: "{{ ssh.user_keys }}"
+  when: ssh.user_keys is defined
 
 - name: Install Mosh
   pacman: name=mosh state=present

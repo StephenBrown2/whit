@@ -1,0 +1,202 @@
+---
+- name: Ensure {{ rax.git_dir }} exists
+  file:
+    path: "{{ rax.git_dir }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+
+- name: Fetch authnet
+  git:
+    dest: "{{ rax.git_dir }}/authnet"
+    repo: git@github.rackspace.com:SupportTools/authnet.git
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Install authnet
+  file:
+    path: /usr/local/bin/authnet
+    src: "{{ rax.git_dir }}/authnet/authnet.sh"
+    state: link
+    mode: 0755
+
+- name: Ensure pip config dir exists
+  file:
+    path: /home/{{ user.name }}/.config/pip
+    state: directory
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Set up rax artifacts pypi repo
+  copy:
+    dest: /home/{{ user.name }}/.config/pip/pip.conf
+    src: pip.conf
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Install expect
+  pacman:
+    name: expect
+    state: present
+
+- name: Install hammertime
+  pip:
+    name: hammertime
+    state: latest
+
+- name: Fetch raxcfg
+  git:
+    dest: "{{ rax.git_dir }}/raxcfg"
+    repo: git@github.rackspace.com:SupportTools/raxcfg.git
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Ensure raxcfg config dir exists
+  file:
+    path: /home/{{ user.name }}/.config/rackspace
+    state: directory
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Configure raxcfg
+  ini_file:
+    path: /home/{{ user.name }}/.config/rackspace/raxcfg.ini
+    section: raxcommon
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+    mode: "u=rw,g=r,o=r"
+  with_dict:
+    rax_sso: "{{ rax.sso_user }}"
+    rax_int_sso: "{{ rax.int_user }}"
+    rax_ssh_args: "{{ rax.ssh_args }}"
+    rax_default_dc: "{{ rax.default_dc }}"
+    rax_default_region: "{{ rax.default_region }}"
+    rax_default_sshcfg: /home/{{ user.name }}/.ssh/config
+    rax_default_sshkey: /home/{{ user.name }}/.ssh/keys/{{ssh.user_keys | first }}
+    rax_default_sshpub: /home/{{ user.name }}/.ssh/keys/{{ssh.user_keys | first }}.pub
+    rax_cloud_ddi: "{{ rax.cloud_ddi }}"
+    rax_cloud_apikey: "{{ rax.cloud_apikey }}"
+    rax_cloud_password: "{{ rax.cloud_password }}"
+    rax_cloud_username: "{{ rax.cloud_username }}"
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Initialize raxcfg
+  shell: python ./generate_raxcfg.py --inifile /home/{{ user.name }}/.config/rackspace/raxcfg.ini --skip-prompts
+  args:
+    chdir: "{{ rax.git_dir }}/raxcfg"
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Install freerdp
+  pacman:
+    name: freerdp
+    state: present
+
+- name: Fetch rdpwin
+  git:
+    dest: "{{ rax.git_dir }}/rdpwin"
+    repo: git@github.rackspace.com:SupportTools/rdpwin.git
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Install rdpwin (python version)
+  file:
+    path: /usr/local/bin/rdpwin
+    src: "{{ rax.git_dir }}/rdpwin/contrib/rdpwin.py"
+    state: link
+    mode: 0755
+
+- name: Fetch intensify
+  git:
+    dest: "{{ rax.git_dir }}/intensify"
+    repo: git@github.rackspace.com:SupportTools/intensify.git
+    version: dev
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Install deps for intensify
+  pacman:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - python-requests
+    - python-beautifulsoup4
+    - python-lxml
+
+- name: Install intensify
+  shell: pip install -e .
+  args:
+    chdir: "{{ rax.git_dir }}/intensify"
+
+- name: Install Boxes
+  pacman:
+    state: present
+    name: gnome-boxes
+
+- name: Make Zoom package
+  aur:
+    name: zoom
+    user: "{{ user.name }}"
+  # This currently fails due to the aur library's use of *.pkg.tar* glob and the
+  # zoom PKGBUILD grabbing https://zoom.us/client/${pkgver}/zoom_x86_64.pkg.tar.xz
+  # as ${pkgname}-${pkgver}_orig_x86_64.pkg.tar.xz and making a *.pkg.tar file
+  failed_when: false
+
+- name: Check for zoom pkgfile
+  stat:
+    path: "{{ item }}"
+  register: pkgfile
+  with_fileglob:
+    - "/home/{{ user.name }}/aur/zoom/zoom*.pkg.tar"
+  failed_when: not pkgfile.stat.exists
+
+- name: Remove orig pkg
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - "/home/{{ user.name }}/aur/zoom/*_orig_*"
+
+- name: Install Zoom
+  shell: pacman -U --noconfirm /home/{{ user.name }}/aur/zoom/*.pkg.tar*
+
+- name: Install Rambox
+  aur:
+    name: rambox-bin
+    user: "{{ user.name }}"
+
+- name: Install ssltool-cli
+  get_url:
+    url: https://ssltool.rackspace.com/cli/ssltool-cli
+    dest: /usr/local/bin/ssltool-cli
+    mode: 0755
+
+- name: Install rscerts
+  shell: ssltool-cli rscerts
+  args:
+    stdin: yes
+
+- name: Add Kevin Cernekee <cernekee@gmail.com>'s GPG key
+  shell: gpg --quiet --yes --receive-keys 63B81599BC0B0D65
+
+- name: Install stoken
+  aur: name=stoken user="{{ user.name }}"
+
+- name: Decrypt RSA Token
+  copy:
+    dest: /tmp/rsa.stdid
+    src: RSAToken.stdid
+    owner: "{{ user.name }}"
+
+- name: Import RSA Token
+  shell: stoken import --file=/tmp/rsa.stdid
+  args:
+    creates: /home/{{ user.name }}/.stokenrc
+  become: yes
+  become_user: "{{ user.name }}"
+
+- name: Remove RSA Token
+  file:
+    path: /tmp/rsa.stdid
+    state: absent

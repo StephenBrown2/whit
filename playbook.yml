@@ -25,3 +25,4 @@
     - { role: firejail, tags: ['firejail'] }
     - { role: unbound, tags: ['unbound'] }
     - { role: editors, tags: ['editors'] }
+    - { role: filesystems, tags: ['filesystems'] }

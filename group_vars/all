@@ -67,6 +67,11 @@ base_packages:
     - tmux
     - units
 
+filesystem_packages:
+    - dosfstools
+    - ntfs-3g
+    - exfat-utils
+
 aur:
     dir: aur
     packages:

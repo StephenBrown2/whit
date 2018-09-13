@@ -24,3 +24,4 @@
     - { role: rackspace, tags: ['work'] }
     - { role: firejail, tags: ['firejail'] }
     - { role: unbound, tags: ['unbound'] }
+    - { role: editors, tags: ['editors'] }

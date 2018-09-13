@@ -31,6 +31,11 @@ user:
         rotate: 8
     xdg_dirs: yes
 
+dotfiles:
+    url: git@gitlab.com:StephenBrown2/dotfiles.git
+    destination: git/lab/dotfiles
+    rcup_flags: -fx README.md
+
 passwordless_sudo:
     - /usr/bin/pacman
 
@@ -41,6 +46,7 @@ base_packages:
     - fwupd
     - git
     - glances
+    - go
     - gptfdisk
     - grml-zsh-config
     - jq
@@ -74,7 +80,6 @@ aur:
         - python-black
         - rambox-bin
         - shfmt
-        - yay
         - zplug
 
 journal:

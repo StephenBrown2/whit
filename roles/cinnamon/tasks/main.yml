@@ -1,15 +1,20 @@
 ---
 - name: Install Cinnamon
-  pacman: name=cinnamon state=present
+  pacman:
+    name: cinnamon
+    state: present
 
 - name: Install Arc theme and icons
-  pacman: name={{ item }}
+  pacman:
+    name: "{{ item }}"
   with_items:
     - arc-gtk-theme
     - arc-icon-theme
 
 - name: Install Paper icon set
-  aur: name=paper-icon-theme user={{ user.name }}
+  aur:
+    name: paper-icon-theme
+    user: "{{ user.name }}"
 
 - name: Get current inheritance
   shell: "grep Inherits /usr/share/icons/Arc/index.theme"

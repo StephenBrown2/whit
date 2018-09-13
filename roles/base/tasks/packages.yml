@@ -1,18 +1,23 @@
 ---
 - name: Install universal base packages
-  pacman: name={{ item }} state=present
+  pacman:
+    name: "{{ item }}"
+    state: present
   with_items: "{{ base_packages }}"
   tags:
     - packages
 
 - name: Create pacman hook directory
-  file: path=/etc/pacman.d/hooks
-        state=directory
+  file:
+    path: /etc/pacman.d/hooks
+    state: directory
   tags:
     - packages
 
 - name: Push pacman mirror list update hook
-  copy: src=mirrorlist.hook dest=/etc/pacman.d/hooks/mirrorlist.hook
+  copy:
+    src: mirrorlist.hook
+    dest: /etc/pacman.d/hooks/mirrorlist.hook
   tags:
     - packages
 
@@ -23,36 +28,46 @@
     line: "COMPRESSXZ=(xz -c -z - --threads=0)"
 
 - name: Create AUR directory
-  file: path=/home/{{ user.name }}/{{ aur.dir }}
-        state=directory
-        owner={{ user.name }}
-        group={{ user.group }}
+  file:
+    path: /home/{{ user.name }}/{{ aur.dir }}
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
   tags:
     - aur
     - packages
 
-- name: "Install cower (for ansible-installed AUR packages)"
-  aur: name=cower user={{ user.name }} skip_pgp=yes
+- name: Install yay
+  aur:
+    name: yay
+    user: "{{ user.name }}"
+    skip_pgp: yes
   tags:
     - aur
     - packages
 
 - name: Install AUR base packages
-  aur: name={{ item }} user={{ user.name }}
+  aur:
+    name: "{{ item }}"
+    user: "{{ user.name }}"
   with_items: "{{ aur.packages }}"
   tags:
     - aur
     - packages
 
 - name: Push pacman cache cleanup service
-  copy: src=paccache.service dest=/etc/systemd/system/paccache.service
+  copy:
+    src: paccache.service
+    dest: /etc/systemd/system/paccache.service
   notify:
     - reload systemd config
   tags:
     - packages
 
 - name: Push pacman cache cleanup timer
-  copy: src=paccache.timer dest=/etc/systemd/system/paccache.timer
+  copy:
+    src: paccache.timer
+    dest: /etc/systemd/system/paccache.timer
   notify:
     - reload systemd config
     - restart paccache
@@ -60,6 +75,9 @@
     - packages
 
 - name: Enable and start pacman cache cleanup timer
-  service: name=paccache.timer enabled=yes state=started
+  service:
+    name: paccache.timer
+    enabled: yes
+    state: started
   tags:
     - packages

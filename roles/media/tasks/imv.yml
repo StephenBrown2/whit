@@ -1,5 +1,7 @@
 ---
 - name: Install imv
-  pacman: name=imv state=present
+  pacman:
+    name: imv
+    state: present
   tags:
     - imv

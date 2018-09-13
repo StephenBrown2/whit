@@ -5,7 +5,9 @@
     state: directory
 
 - name: Install VSCode
-  aur: name=visual-studio-code-bin user={{ user.name }}
+  aur:
+    name: visual-studio-code-bin
+    user: "{{ user.name }}"
 
 - name: Check installed extensions
   shell: code --list-extensions

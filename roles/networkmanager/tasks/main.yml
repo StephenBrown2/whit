@@ -1,22 +1,34 @@
 ---
 - name: Install NetworkManager and dependencies
-  pacman: name={{ item }} state=present
+  pacman:
+    name: "{{ item }}"
+    state: present
   with_items:
       - networkmanager
       - network-manager-applet
       - gnome-keyring
 
 - name: Push trusted network list
-  template: src=trusted_networks.j2 dest=/usr/local/etc/trusted_networks
+  template:
+    src: trusted_networks.j2
+    dest: /usr/local/etc/trusted_networks
 
 - name: Verify trusted unit list exists
-  file: path=/usr/local/etc/trusted_units state=touch
+  file:
+    path: /usr/local/etc/trusted_units
+    state: touch
 
 - name: Pull nmtrust files to machine
-  git: repo=https://github.com/pigmonkey/nmtrust.git dest=/tmp/nmtrust
+  git:
+    repo: https://github.com/pigmonkey/nmtrust.git
+    dest: /tmp/nmtrust
 
 - name: Push trusted network checker
-  copy: remote_src=yes src=/tmp/nmtrust/nmtrust dest=/usr/local/bin/nmtrust mode=0755
+  copy:
+    remote_src: yes
+    src: /tmp/nmtrust/nmtrust
+    dest: /usr/local/bin/nmtrust
+    mode: 0755
 
 # - name: Push trusted unit toggler
 #   get_url:
@@ -25,7 +37,11 @@
 #     mode: 0755
 
 - name: Push trusted unit toggler
-  copy: remote_src=yes src=/tmp/nmtrust/ttoggle dest=/usr/local/bin/ttoggle mode=0755
+  copy:
+    remote_src: yes
+    src: /tmp/nmtrust/ttoggle
+    dest: /usr/local/bin/ttoggle
+    mode: 0755
 
 # - name: Push trusted unit toggler
 #   get_url:
@@ -34,7 +50,11 @@
 #     mode: 0755
 
 - name: Push trusted network dispatcher
-  copy: remote_src=yes src=/tmp/nmtrust/dispatcher/10trust dest=/etc/NetworkManager/dispatcher.d/10trust mode=0755
+  copy:
+    remote_src: yes
+    src: /tmp/nmtrust/dispatcher/10trust
+    dest: /etc/NetworkManager/dispatcher.d/10trust
+    mode: 0755
 
 # - name: Push trusted unit toggler
 #   get_url:
@@ -43,15 +63,25 @@
 #     mode: 0755
 
 - name: Push connectivity check config
-  template: src=connectivity.conf.j2 dest=/etc/NetworkManager/conf.d/20-connectivity.conf
+  template:
+    src: connectivity.conf.j2
+    dest: /etc/NetworkManager/conf.d/20-connectivity.conf
   when: network.conn_check is defined
 
 - name: Push RS connection config
-  template: src=rs8021x.j2 dest=/etc/NetworkManager/system-connections/RS-802-1x
+  template:
+    src: rs8021x.j2
+    dest: /etc/NetworkManager/system-connections/RS-802-1x
   when: rax.sso_pass is defined and rax.network_uuid is defined
 
 - name: Enable and start NetworkManager
-  service: name=NetworkManager.service enabled=yes state=started
+  service:
+    name: NetworkManager.service
+    enabled: yes
+    state: started
 
 - name: Enable and start NetworkManager dispatcher
-  service: name=NetworkManager-dispatcher.service enabled=yes state=started
+  service:
+    name: NetworkManager-dispatcher.service
+    enabled: yes
+    state: started

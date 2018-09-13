@@ -7,7 +7,9 @@
 - include: qcode.yml
 
 - name: Install misc media codecs and helpers
-  pacman: name={{ item }} state=present
+  pacman:
+    name: "{{ item }}"
+    state: present
   with_items:
     - flac
     - lame
@@ -18,9 +20,13 @@
     - opus-tools
 
 # - name: Install Metadata Anonymisation Toolkit and dependencies
-#   aur: name=mat2 user={{ user.name }}
+#   aur:
+#     name: mat2
+#     user: "{{ user.name }}"
 #   tags:
 #     - aur
 
 - name: Install youtube-dl
-  pacman: name=youtube-dl state=present
+  pacman:
+    name: youtube-dl
+    state: present

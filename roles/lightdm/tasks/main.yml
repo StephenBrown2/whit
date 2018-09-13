@@ -1,40 +1,57 @@
 ---
 - name: Install LightDM
-  pacman: name=lightdm state=present
+  pacman:
+    name: lightdm
+    state: present
 
 - name: Install LightDM Slick Greeter and settings
-  aur: name={{ item }} user={{ user.name }}
+  aur:
+    name: "{{ item }}"
+    user: "{{ user.name }}"
   with_items:
       - lightdm-slick-greeter
       - lightdm-settings
 
 - name: Unset current display manager (if set)
-  file: path=/etc/systemd/system/display-manager.service
-        state=absent
+  file:
+    path: /etc/systemd/system/display-manager.service
+    state: absent
 
 - name: Enable LightDM
-  service: name=lightdm.service enabled=yes
+  service:
+    name: lightdm.service
+    enabled: yes
 
 - name: Create background dir
-  file: path=/usr/share/backgrounds state=directory
+  file:
+    path: /usr/share/backgrounds
+    state: directory
 
 - name: Push LightDM greeter background
-  copy: src=rs_fanatiguy_large_dark_paper.jpg dest=/usr/share/backgrounds/rs_fanatiguy_large_dark_paper.jpg
+  copy:
+    src: rs_fanatiguy_large_dark_paper.jpg
+    dest: /usr/share/backgrounds/rs_fanatiguy_large_dark_paper.jpg
 
 - name: Create lightdm dir
-  file: path=/etc/lightdm state=directory
+  file:
+    path: /etc/lightdm
+    state: directory
 
 - name: Push LightDM Slick Greeter config
-  template: src=slick-greeter.conf.j2 dest=/etc/lightdm/slick-greeter.conf
+  template:
+    src: slick-greeter.conf.j2
+    dest: /etc/lightdm/slick-greeter.conf
 
 - name: Specify LightDM greeter background
-  lineinfile: dest=/etc/lightdm/slick-greeter.conf
-              regexp="^background="
-              state=present
-              line="background=/usr/share/backgrounds/rs_fanatiguy_large_dark_paper.jpg"
+  lineinfile:
+    dest: /etc/lightdm/slick-greeter.conf
+    regexp: "^background="
+    line: background=/usr/share/backgrounds/rs_fanatiguy_large_dark_paper.jpg
+    state: present
 
 - name: Enable Slick Greeter
-  lineinfile: dest=/etc/lightdm/lightdm.conf
-              regexp="^#?greeter-session="
-              state=present
-              line="greeter-session=lightdm-slick-greeter"
+  lineinfile:
+    dest: /etc/lightdm/lightdm.conf
+    regexp: "^#?greeter-session="
+    state: present
+    line: greeter-session=lightdm-slick-greeter

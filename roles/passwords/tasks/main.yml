@@ -1,13 +1,19 @@
 ---
 - name: Install BitWarden CLI
-  aur: name=bitwarden-cli user={{ user.name }}
+  aur:
+    name: bitwarden-cli
+    user: "{{ user.name }}"
   tags:
     - aur
 
 - name: Install LastPass CLI
-  pacman: name=lastpass-cli state=present
+  pacman:
+    name: lastpass-cli
+    state: present
 
 - name: Install pass-rotate
-  aur: name=pass-rotate user={{ user.name }}
+  aur:
+    name: pass-rotate
+    user: "{{ user.name }}"
   tags:
     - aur

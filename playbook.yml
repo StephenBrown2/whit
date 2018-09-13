@@ -6,6 +6,7 @@
     - { role: firmware, tags: ['firmware'] }
     - { role: microcode, tags: ['microcode'] }
     - { role: ssh, tags: ['ssh'] }
+    - { role: networkmanager, tags: ['networkmanager'] }
     - { role: vscode, tags: ['dev'] }
     - { role: google-chrome, tags: ['browser'] }
     - { role: dotfiles, tags: ['dotfiles'] }

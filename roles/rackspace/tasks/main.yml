@@ -64,7 +64,7 @@
     section: raxcommon
     option: "{{ item.key }}"
     value: "{{ item.value }}"
-    mode: "u=rw,g=r,o=r"
+    mode: 0644
   with_dict:
     rax_sso: "{{ rax.sso_user }}"
     rax_int_sso: "{{ rax.int_user }}"
@@ -181,7 +181,9 @@
   shell: gpg --quiet --yes --receive-keys 63B81599BC0B0D65
 
 - name: Install stoken
-  aur: name=stoken user="{{ user.name }}"
+  aur:
+    name: stoken
+    user: "{{ user.name }}"
 
 - name: Decrypt RSA Token
   copy:
@@ -190,7 +192,7 @@
     owner: "{{ user.name }}"
 
 - name: Import RSA Token
-  shell: stoken import --file=/tmp/rsa.stdid
+  shell: stoken import --file /tmp/rsa.stdid
   args:
     creates: /home/{{ user.name }}/.stokenrc
   become: yes

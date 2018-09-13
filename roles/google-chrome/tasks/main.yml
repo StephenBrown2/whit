@@ -7,4 +7,6 @@
     dest: /etc/opt/chrome/policies/managed/
 
 - name: Install Google Chrome
-  aur: name=google-chrome user={{ user.name }}
+  aur:
+    name: google-chrome
+    user: "{{ user.name }}"

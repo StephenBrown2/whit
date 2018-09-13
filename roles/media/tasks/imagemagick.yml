@@ -1,5 +1,7 @@
 ---
 - name: Install imagemagick
-  pacman: name=imagemagick state=present
+  pacman:
+    name: imagemagick
+    state: present
   tags:
     - imagemagick

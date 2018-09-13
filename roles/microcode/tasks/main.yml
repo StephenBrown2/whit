@@ -1,20 +1,26 @@
 ---
+- name: Install Intel microcode package
+  pacman:
+    name: intel-ucode
+    state: present
+  when: "'GenuineIntel' in ansible_processor"
+
 - name: Insert intel-ucode in systemd-boot config
   lineinfile:
-      path: /boot/loader/entries/arch.conf
-      line: initrd /intel-ucode.img
-      insertafter: "^linux "
+    path: /boot/loader/entries/arch.conf
+    line: initrd /intel-ucode.img
+    insertafter: "^linux "
   when: "'GenuineIntel' in ansible_processor"
-- name: Install Intel microcode
-  pacman: name=intel-ucode state=present
-  when: "'GenuineIntel' in ansible_processor"
+
+- name: Install AMD microcode package
+  pacman:
+    name: amd-ucode
+    state: present
+  when: "'AuthenticAMD' in ansible_processor"
 
 - name: Insert amd-ucode in systemd-boot config
   lineinfile:
-      path: /boot/loader/entries/arch.conf
-      line: initrd /amd-ucode.img
-      insertafter: "^linux "
-  when: "'AuthenticAMD' in ansible_processor"
-- name: Install AMD microcode
-  pacman: name=amd-ucode state=present
+    path: /boot/loader/entries/arch.conf
+    line: initrd /amd-ucode.img
+    insertafter: "^linux "
   when: "'AuthenticAMD' in ansible_processor"

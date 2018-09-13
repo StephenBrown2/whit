@@ -1,22 +1,33 @@
 ---
 - name: Install Unbound
-  pacman: name=unbound state=present
+  pacman:
+    name: unbound
+    state: present
 
 - name: Download root hints
-  get_url: url=https://www.internic.net/domain/named.cache dest=/etc/unbound/root.hints force=yes
+  get_url:
+    url: https://www.internic.net/domain/named.cache
+    dest: /etc/unbound/root.hints
+    force: yes
 
 - name: Copy Unbound configuration file
-  template: src=unbound.conf.j2 dest=/etc/unbound/unbound.conf
+  template:
+    src: unbound.conf.j2
+    dest: /etc/unbound/unbound.conf
   notify:
     - restart unbound
 
 - name: Create Unbound systemd unit file directory
-  file: path=/etc/systemd/system/unbound.service.d state=directory
+  file:
+    path: /etc/systemd/system/unbound.service.d
+    state: directory
   tags:
     - firejail
 
 - name: Push Unbound socket unit file
-  copy: src=unbound-service-override.conf dest=/etc/systemd/system/unbound.service.d/override.conf
+  copy:
+    src: unbound-service-override.conf
+    dest: /etc/systemd/system/unbound.service.d/override.conf
   notify:
     - reload systemd config
     - restart unbound
@@ -24,9 +35,10 @@
     - firejail
 
 - name: Remove Unbound systemd unit PID file line
-  lineinfile: dest=/usr/lib/systemd/system/unbound.service
-              state=absent
-              line="PIDFile=/run/unbound.pid"
+  lineinfile:
+    dest: /usr/lib/systemd/system/unbound.service
+    state: absent
+    line: "PIDFile=/run/unbound.pid"
   notify:
     - reload systemd config
     - restart unbound
@@ -34,15 +46,19 @@
     - firejail
 
 - name: Enable and start Unbound
-  service: name=unbound.service enabled=yes state=started
+  service:
+    name: unbound.service
+    enabled: yes
+    state: started
 
 - name: Remove commented localhost line
-  lineinfile: dest=/etc/resolvconf.conf
-              state=absent
-              line="#name_servers=127.0.0.1"
-
+  lineinfile:
+    dest: /etc/resolvconf.conf
+    state: absent
+    line: "#name_servers=127.0.0.1"
 
 - name: Configure resolvconf to use Unbound
-  lineinfile: dest=/etc/resolvconf.conf
-              state=present
-              line="name_servers=127.0.0.1"
+  lineinfile:
+    dest: /etc/resolvconf.conf
+    state: present
+    line: "name_servers=127.0.0.1"

@@ -1,6 +1,11 @@
 ---
 - name: Copy systemd-timesyncd configuration file
-  template: src=timesyncd.conf.j2 dest=/etc/systemd/timesyncd.conf
+  template:
+    src: timesyncd.conf.j2
+    dest: /etc/systemd/timesyncd.conf
 
 - name: Enable systemd-timesyncd
-  service: name=systemd-timesyncd enabled=yes state=started
+  service:
+    name: systemd-timesyncd
+    state: started
+    enabled: yes

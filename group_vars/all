@@ -195,15 +195,23 @@ firejail:
         - ~/.vdirsyncer
         - ~/library
 
-nameservers:
-    - 1.1.1.1        # Cloudflare
-    - 1.0.0.1        # Cloudflare
-    - 9.9.9.9        # Quad9
-    - 8.8.8.8        # Google
-    - 8.8.4.4        # Google
-    - 209.244.0.3    # Level 3
-    - 74.82.42.42    # Hurricane Electric
-    - 208.67.222.222 # OpenDNS
-    - 208.67.220.220 # OpenDNS
-    - 2001:4860:4860::8888 # Google IPv6
-    - 2001:4860:4860::8844 # Google IPv6
+unbound:
+    tls: False
+    nameservers:
+        - 1.1.1.1        # Cloudflare
+        # - 1.1.1.1@853    # Cloudflare TLS
+        - 1.0.0.1        # Cloudflare
+        # - 1.0.0.1@853    # Cloudflare TLS
+        - 9.9.9.9        # Quad9
+        # - 9.9.9.9@853    # Quad9 TLS
+        - 149.112.112.112 # Quad9 Secondary
+        - 8.8.8.8        # Google
+        - 8.8.4.4        # Google
+        - 209.244.0.3    # Level 3
+        - 74.82.42.42    # Hurricane Electric
+        - 208.67.222.222 # OpenDNS
+        - 208.67.220.220 # OpenDNS
+        - 2620:fe::fe    # Quad9 IPv6
+        - 2620:fe::9     # Quad9 IPv6
+        - 2001:4860:4860::8888 # Google IPv6
+        - 2001:4860:4860::8844 # Google IPv6

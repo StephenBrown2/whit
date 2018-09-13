@@ -22,3 +22,4 @@
     - { role: ntp, tags: ['ntp'] }
     - { role: rackspace, tags: ['work'] }
     - { role: firejail, tags: ['firejail'] }
+    - { role: unbound, tags: ['unbound'] }

@@ -2,4 +2,4 @@
 dependencies:
   - { role: base }
   - { role: fonts }
-  # - { role: firejail }
+  - { role: firejail }

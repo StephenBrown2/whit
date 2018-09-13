@@ -21,3 +21,4 @@
     - { role: nettools, tags: ['nettools'] }
     - { role: ntp, tags: ['ntp'] }
     - { role: rackspace, tags: ['work'] }
+    - { role: firejail, tags: ['firejail'] }

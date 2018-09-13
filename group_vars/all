@@ -182,6 +182,19 @@ network:
     trusted_uuid:
         - 7c081ea3-9836-476b-9a1f-7685ef107568
 
+firejail:
+    blacklist:
+        - ~/.calendars
+        - ~/.config/vdirsyncer
+        - ~/.contacts
+        - ~/.keys
+        - ~/.mbsyncrc
+        - ~/.offlineimap
+        - ~/.offlineimaprc
+        - ~/.password-store
+        - ~/.vdirsyncer
+        - ~/library
+
 nameservers:
     - 1.1.1.1        # Cloudflare
     - 1.0.0.1        # Cloudflare

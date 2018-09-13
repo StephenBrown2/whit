@@ -1,0 +1,5 @@
+---
+- name: activate firejail profiles
+  command: /usr/local/bin/activate-firejail
+  become: yes
+  become_user: "{{ user.name }}"

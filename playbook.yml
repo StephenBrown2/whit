@@ -26,3 +26,4 @@
     - { role: unbound, tags: ['unbound'] }
     - { role: editors, tags: ['editors'] }
     - { role: filesystems, tags: ['filesystems'] }
+    - { role: archive, tags: ['archive'] }

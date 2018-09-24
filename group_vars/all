@@ -80,7 +80,7 @@ aur:
         - downgrade
         - gitkraken
         #- miller
-        #- myrepos
+        - myrepos
         - python-toml  # required by python-black
         - python-black
         - python-prospector

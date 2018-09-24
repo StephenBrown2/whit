@@ -22,7 +22,7 @@ user:
     uid: 1000
     group: stephen
     groups: ''
-    sudoer: true
+    sudoer: yes
     shell: /usr/bin/zsh
     email: Stephen.Brown2@gmail.com
     work_email: stephen.brownii@rackspace.com
@@ -122,8 +122,8 @@ vscode:
 
 ssh:
     port: 22
-    sshfs: true
-    autossh: false
+    sshfs: yes
+    autossh: no
     user_keys:
         - id_ed25519
         - aur_ecdsa.key
@@ -131,7 +131,7 @@ ssh:
         - github_ecdsa.key
         - gitlab_ed25519.key
         - rackspace.github_rsa.key
-    enable_sshd: False
+    enable_sshd: no
 
 fonts:
     base:
@@ -186,7 +186,7 @@ rax:
     ssh_args: ""
 
 network:
-    spoof_mac: False
+    spoof_mac: no
     conn_check:
         # uri: http://httpbin.org/get?q=NetworkManager%20is%20online
         interval: 0
@@ -208,7 +208,7 @@ firejail:
         - ~/library
 
 unbound:
-    tls: False
+    tls: no
     nameservers:
         - 1.1.1.1        # Cloudflare
         # - 1.1.1.1@853    # Cloudflare TLS

@@ -230,3 +230,7 @@ unbound:
 
 editors:
     - vim
+
+udisks:
+    auto_mount: no
+    shared_mount: yes

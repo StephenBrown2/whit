@@ -82,8 +82,10 @@ aur:
         #- myrepos
         - python-toml  # required by python-black
         - python-black
+        - python-prospector
         - rambox-bin
         - shfmt
+        - vivaldi
         - zplug
 
 journal:

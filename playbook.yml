@@ -28,3 +28,4 @@
     - { role: filesystems, tags: ['filesystems'] }
     - { role: archive, tags: ['archive'] }
     - { role: udisks, tags: ['udisks'] }
+    - { role: spell, tags: ['spell'] }

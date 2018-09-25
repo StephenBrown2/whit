@@ -31,3 +31,4 @@
     - { role: spell, tags: ['spell'] }
     - { role: browsers, tags: ['browsers'] }
     - { role: yubikey, tags: ['yubikey'] }
+    - { role: mpv, tags: ['mpv'] }

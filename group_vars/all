@@ -123,7 +123,7 @@ vscode:
 ssh:
     port: 22
     sshfs: yes
-    autossh: no
+    autossh: yes
     user_keys:
         - id_ed25519
         - aur_ecdsa.key
@@ -234,3 +234,12 @@ editors:
 udisks:
     auto_mount: no
     shared_mount: yes
+
+browser_choices:
+    - firefox-developer-edition -P default
+    - firefox-developer-edition -P work
+    - firewarden google-chrome
+    - vivaldi-stable
+    - play
+    - qcode
+    - "| xclip -selection c"

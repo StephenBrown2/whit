@@ -8,7 +8,7 @@
     - { role: ssh, tags: ['ssh'] }
     - { role: networkmanager, tags: ['networkmanager'] }
     - { role: vscode, tags: ['dev'] }
-    - { role: google-chrome, tags: ['browser'] }
+    - { role: google-chrome, tags: ['browsers'] }
     - { role: dotfiles, tags: ['dotfiles'] }
     - { role: ssd, tags: ['ssd'] }
     - { role: fonts, tags: ['fonts'] }
@@ -29,3 +29,4 @@
     - { role: archive, tags: ['archive'] }
     - { role: udisks, tags: ['udisks'] }
     - { role: spell, tags: ['spell'] }
+    - { role: browsers, tags: ['browsers'] }

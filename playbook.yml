@@ -30,3 +30,4 @@
     - { role: udisks, tags: ['udisks'] }
     - { role: spell, tags: ['spell'] }
     - { role: browsers, tags: ['browsers'] }
+    - { role: yubikey, tags: ['yubikey'] }

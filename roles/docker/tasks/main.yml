@@ -1,0 +1,36 @@
+---
+- name: Install docker
+  pacman:
+    name: docker
+    state: present
+
+- name: Install docker-compose
+  pacman:
+    name: docker-compose
+    state: present
+
+- name: Install docker-machine
+  pacman:
+    name: docker-machine
+    state: present
+
+- name: Create docker group
+  group:
+    name: docker
+    state: present
+  tags:
+    - user
+
+- name: Add user to docker group
+  user:
+    name: "{{ user.name }}"
+    groups: docker
+    append: yes
+  tags:
+    - user
+
+- name: Enable and start docker service
+  service:
+    name: docker.service
+    enabled: yes
+    state: started

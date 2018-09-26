@@ -35,3 +35,4 @@
     - { role: screensaver, tags: ['screensaver'] }
     - { role: taskwarrior, tags: ['taskwarrior'] }
     - { role: docker, tags: ['docker'] }
+    - { role: office, tags: ['office'] }

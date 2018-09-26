@@ -118,6 +118,7 @@ vscode:
         - foxundermoon.shell-format
         - timonwong.shellcheck
         - Tyriar.sort-lines
+        - hangxingliu.vscode-systemd-support
         - redhat.vscode-yaml
 
 ssh:

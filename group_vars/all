@@ -51,6 +51,7 @@ base_packages:
     - grml-zsh-config
     - jq
     - lsof
+    - meld
     - moreutils
     - pacman-contrib
     - prettier
@@ -59,6 +60,7 @@ base_packages:
     - python-pipenv
     - python-secretstorage
     - reflector
+    - ripgrep
     - rsync
     - screen
     - shellcheck

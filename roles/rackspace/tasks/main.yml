@@ -202,3 +202,30 @@
   file:
     path: /tmp/rsa.stdid
     state: absent
+
+- name: Fetch tōk
+  git:
+    dest: "{{ rax.git_dir }}/tok"
+    repo: git@github.rackspace.com:samu1044/tok.git
+  become: true
+  become_user: "{{ user.name }}"
+
+- name: Install repo deps for tōk
+  pacman:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - python-requests
+    - python-keyring
+    - python-keyrings-alt
+    - python-pyjwt
+
+- name: Install aur deps for tōk
+  aur:
+    name: python-xerox
+    user: "{{ user.name }}"
+
+- name: Install tōk
+  shell: pip install -e .
+  args:
+    chdir: "{{ rax.git_dir }}/tok"

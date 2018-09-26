@@ -36,3 +36,4 @@
     - { role: taskwarrior, tags: ['taskwarrior'] }
     - { role: docker, tags: ['docker'] }
     - { role: office, tags: ['office'] }
+    - { role: redshift, tags: ['redshift'] }

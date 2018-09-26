@@ -246,3 +246,6 @@ browser_choices:
     - play
     - qcode
     - "| xclip -selection c"
+
+redshift:
+    enable_service: no

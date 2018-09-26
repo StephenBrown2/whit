@@ -1,0 +1,65 @@
+---
+- name: Install RedShift and dependencies
+  pacman:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - librsvg
+    - python-gobject
+    - python-xdg
+    - libappindicator-gtk3
+    - redshift
+
+- name: Jail RedShift
+  file:
+    src: /usr/bin/firejail
+    dest: /usr/local/bin/redshift
+    state: link
+  tags:
+    - firejail
+
+- name: Jail RedShift GTK
+  file:
+    src: /usr/bin/firejail
+    dest: /usr/local/bin/redshift-gtk
+    state: link
+  tags:
+    - firejail
+
+- name: Push RedShift firejail profile
+  copy:
+    src: firejail/redshift.profile
+    dest: /usr/local/etc/firejail/redshift.profile
+  notify:
+    - activate firejail profiles
+  tags:
+    - firejail
+
+- name: Push RedShift GTK firejail profile
+  copy:
+    src: firejail/redshift.profile
+    dest: /usr/local/etc/firejail/redshift-gtk.profile
+  notify:
+    - activate firejail profiles
+  tags:
+    - firejail
+
+- name: Allow RedShift to access geoclue
+  blockinfile:
+    dest: /etc/geoclue/geoclue.conf
+    block: |
+      [redshift]
+      allowed=true
+      system=false
+      users=
+
+- name: Start and enable user Redshift service
+  systemd:
+    name: redshift.service
+    daemon_reload: yes
+    enabled: yes
+    state: started
+    user: yes
+  become: yes
+  become_user: "{{ user.name }}"
+  when: redshift is defined and redshift.enable_service

@@ -33,3 +33,4 @@
     - { role: yubikey, tags: ['yubikey'] }
     - { role: mpv, tags: ['mpv'] }
     - { role: screensaver, tags: ['screensaver'] }
+    - { role: taskwarrior, tags: ['taskwarrior'] }

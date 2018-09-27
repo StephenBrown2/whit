@@ -259,3 +259,6 @@ himawaripy:
 postgresql:
     enable: yes
     root: /home/postgres
+
+localtime:
+    run_on: all

@@ -40,3 +40,4 @@
     # - { role: virtualbox, tags: ['virtualbox'] }
     - { role: golang, tags: ['golang'] }
     # - { role: hashicorp, tags: ['hashicorp'] }
+    - { role: virtualenv, tags: ['virtualenv'] }

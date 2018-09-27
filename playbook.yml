@@ -42,3 +42,4 @@
     # - { role: hashicorp, tags: ['hashicorp'] }
     - { role: virtualenv, tags: ['virtualenv'] }
     - { role: mapping, tags: ['mapping'] }
+    - { role: himawaripy, tags: ['himawaripy'], when: "himawaripy is defined" }

@@ -47,3 +47,4 @@
     - { role: postgresql, tags: ['postgresql'], when: "postgresql is defined" }
     - { role: localtime, tags: ['localtime'], when: "localtime is defined" }
     - { role: bluetooth, tags: ['bluetooth'], when: "bluetooth is defined" }
+    - { role: wttr, tags: ['wttr'] }

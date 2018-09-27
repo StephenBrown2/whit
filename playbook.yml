@@ -44,3 +44,4 @@
     - { role: mapping, tags: ['mapping'] }
     - { role: himawaripy, tags: ['himawaripy'], when: "himawaripy is defined" }
     - { role: sound, tags: ['sound'] }
+    - { role: postgresql, tags: ['postgresql'], when: "postgresql is defined" }

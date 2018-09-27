@@ -262,3 +262,6 @@ postgresql:
 
 localtime:
     run_on: all
+
+bluetooth:
+    disable: no

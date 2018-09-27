@@ -41,3 +41,4 @@
     - { role: golang, tags: ['golang'] }
     # - { role: hashicorp, tags: ['hashicorp'] }
     - { role: virtualenv, tags: ['virtualenv'] }
+    - { role: mapping, tags: ['mapping'] }

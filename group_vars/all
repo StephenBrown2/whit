@@ -265,3 +265,6 @@ localtime:
 
 bluetooth:
     disable: no
+
+hostsctl:
+    url: https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn/hosts

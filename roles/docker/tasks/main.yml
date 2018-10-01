@@ -29,6 +29,11 @@
   tags:
     - user
 
+- name: Set storage driver for daemon
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
 - name: Enable and start docker service
   service:
     name: docker.service

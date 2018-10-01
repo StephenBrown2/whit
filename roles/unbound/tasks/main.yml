@@ -4,6 +4,11 @@
     name: unbound
     state: present
 
+# - name: Install dnssec-trigger
+#   aur:
+#     name: dnssec-trigger
+#     user: '{{ user.name }}'
+
 - name: Download root hints
   get_url:
     url: https://www.internic.net/domain/named.cache
@@ -51,6 +56,12 @@
     enabled: yes
     state: started
 
+# - name: Enable and start dnssec-triggerd
+#   service:
+#     name: dnssec-triggerd.service
+#     enabled: no
+#     state: stopped
+
 - name: Remove commented localhost line
   lineinfile:
     dest: /etc/resolvconf.conf
@@ -62,3 +73,8 @@
     dest: /etc/resolvconf.conf
     state: present
     line: "name_servers=127.0.0.1"
+
+# - name: Configure NetworkManager to use Unbound
+#   copy:
+#     src: dns.conf
+#     dest: /etc/NetworkManager/conf.d/dns.conf

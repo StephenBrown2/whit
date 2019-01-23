@@ -1,0 +1,5 @@
+---
+- name: Install Postman
+  aur:
+    name: postman-bin
+    user: "{{ user.name }}"

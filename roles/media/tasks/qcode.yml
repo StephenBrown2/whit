@@ -2,7 +2,6 @@
 - name: Install qrencode
   pacman:
     name: qrencode
-    state: present
   tags:
     - qcode
 

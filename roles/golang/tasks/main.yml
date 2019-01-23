@@ -2,7 +2,6 @@
 - name: Install go
   pacman:
     name: go
-    state: present
 
 - name: Create system go group
   group:

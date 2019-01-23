@@ -37,7 +37,6 @@
 - name: Install expect
   pacman:
     name: expect
-    state: present
 
 - name: Install hammertime
   pip:
@@ -65,19 +64,23 @@
     option: "{{ item.key }}"
     value: "{{ item.value }}"
     mode: 0644
-  with_dict:
-    rax_sso: "{{ rax.sso_user }}"
-    rax_int_sso: "{{ rax.int_user }}"
-    rax_ssh_args: "{{ rax.ssh_args }}"
-    rax_default_dc: "{{ rax.default_dc }}"
-    rax_default_region: "{{ rax.default_region }}"
-    rax_default_sshcfg: /home/{{ user.name }}/.ssh/config
-    rax_default_sshkey: /home/{{ user.name }}/.ssh/keys/{{ssh.user_keys | first }}
-    rax_default_sshpub: /home/{{ user.name }}/.ssh/keys/{{ssh.user_keys | first }}.pub
-    rax_cloud_ddi: "{{ rax.cloud_ddi }}"
-    rax_cloud_apikey: "{{ rax.cloud_apikey }}"
-    rax_cloud_password: "{{ rax.cloud_password }}"
-    rax_cloud_username: "{{ rax.cloud_username }}"
+  loop: "{{ items | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  vars:
+    items:
+      rax_sso: "{{ rax.sso_user }}"
+      rax_int_sso: "{{ rax.int_user }}"
+      rax_ssh_args: "{{ rax.ssh_args }}"
+      rax_default_dc: "{{ rax.default_dc }}"
+      rax_default_region: "{{ rax.default_region }}"
+      rax_default_sshcfg: /home/{{ user.name }}/.ssh/config
+      rax_default_sshkey: /home/{{ user.name }}/.ssh/keys/{{ssh.user_keys | first }}
+      rax_default_sshpub: /home/{{ user.name }}/.ssh/keys/{{ssh.user_keys | first }}.pub
+      rax_cloud_ddi: "{{ rax.cloud_ddi }}"
+      rax_cloud_apikey: "{{ rax.cloud_apikey }}"
+      rax_cloud_password: "{{ rax.cloud_password }}"
+      rax_cloud_username: "{{ rax.cloud_username }}"
   become: true
   become_user: "{{ user.name }}"
 
@@ -91,7 +94,6 @@
 - name: Install freerdp
   pacman:
     name: freerdp
-    state: present
 
 - name: Fetch rdpwin
   git:
@@ -117,12 +119,10 @@
 
 - name: Install deps for intensify
   pacman:
-    state: present
-    name: "{{ item }}"
-  with_items:
-    - python-requests
-    - python-beautifulsoup4
-    - python-lxml
+    name:
+      - python-requests
+      - python-beautifulsoup4
+      - python-lxml
 
 - name: Install intensify
   shell: pip install -e .
@@ -131,7 +131,6 @@
 
 - name: Install Boxes
   pacman:
-    state: present
     name: gnome-boxes
 
 - name: Make Zoom package
@@ -212,13 +211,11 @@
 
 - name: Install repo deps for tōk
   pacman:
-    state: present
-    name: "{{ item }}"
-  with_items:
-    - python-requests
-    - python-keyring
-    - python-keyrings-alt
-    - python-pyjwt
+    name:
+      - python-requests
+      - python-keyring
+      - python-keyrings-alt
+      - python-pyjwt
 
 - name: Install aur deps for tōk
   aur:

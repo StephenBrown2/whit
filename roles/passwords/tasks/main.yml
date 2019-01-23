@@ -9,7 +9,6 @@
 - name: Install LastPass CLI
   pacman:
     name: lastpass-cli
-    state: present
 
 - name: Install pass-rotate
   aur:

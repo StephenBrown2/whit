@@ -25,6 +25,6 @@
     line: "{{ item }}"
     create: yes
     mode: 0644
-  with_items:
+  loop:
     - "user-db:user"
     - "system-db:cinnamon"

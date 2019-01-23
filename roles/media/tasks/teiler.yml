@@ -3,7 +3,7 @@
   aur:
     name: "{{ item }}"
     user: "{{ user.name }}"
-  with_items:
+  loop:
     - xininfo-git
     - copyq
     - teiler-git

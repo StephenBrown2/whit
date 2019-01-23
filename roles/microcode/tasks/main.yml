@@ -2,7 +2,6 @@
 - name: Install Intel microcode package
   pacman:
     name: intel-ucode
-    state: present
   when: "'GenuineIntel' in ansible_processor"
 
 - name: Insert intel-ucode in systemd-boot config
@@ -15,7 +14,6 @@
 - name: Install AMD microcode package
   pacman:
     name: amd-ucode
-    state: present
   when: "'AuthenticAMD' in ansible_processor"
 
 - name: Insert amd-ucode in systemd-boot config

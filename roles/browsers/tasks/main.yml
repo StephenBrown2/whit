@@ -2,12 +2,10 @@
 - name: Install w3m
   pacman:
     name: w3m
-    state: present
 
 - name: Install Firefox Developer Edition
   pacman:
     name: firefox-developer-edition
-    state: present
   tags:
     - firefox
 
@@ -143,7 +141,7 @@
     dest: /etc/xdg/mimeapps.list
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
-  with_items:
+  loop:
     - { regexp: '^text/html=', line: 'text/html=browser.desktop' }
     - { regexp: '^text/xml=', line: 'text/xml=browser.desktop' }
     - { regexp: '^text/mml=', line: 'text/mml=browser.desktop' }
@@ -158,7 +156,6 @@
 - name: Install surfraw
   pacman:
     name: surfraw
-    state: present
   tags:
     - surfraw
 

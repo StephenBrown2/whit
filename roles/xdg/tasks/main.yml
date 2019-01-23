@@ -2,7 +2,6 @@
 - name: Install xdg-user-dirs
   pacman:
     name: xdg-user-dirs
-    state: present
   tags:
     - xdg
 

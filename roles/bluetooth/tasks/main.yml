@@ -1,8 +1,6 @@
 - name: Install bluetooth libraries and tools
   pacman:
-    name: "{{ item }}"
-    state: present
-  with_items:
+    name:
       - pulseaudio-bluetooth
       - bluez
       - bluez-libs

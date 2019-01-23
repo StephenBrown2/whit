@@ -3,6 +3,6 @@
   aur:
     name: "{{ item }}"
     user: "{{ user.name }}"
-  with_items:
+  loop:
     - aic94xx-firmware
     - wd719x-firmware

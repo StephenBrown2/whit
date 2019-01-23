@@ -2,13 +2,12 @@
 - name: Install LightDM
   pacman:
     name: lightdm
-    state: present
 
 - name: Install LightDM Slick Greeter and settings
   aur:
     name: "{{ item }}"
     user: "{{ user.name }}"
-  with_items:
+  loop:
       - lightdm-slick-greeter
       - lightdm-settings
 

@@ -1,12 +1,10 @@
 ---
 - name: Install VirtualBox and dependencies
   pacman:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - virtualbox
-    - virtualbox-guest-iso
-    - virtualbox-host-dkms
+    name:
+      - virtualbox
+      - virtualbox-guest-iso
+      - virtualbox-host-dkms
 
 - name: Install VirtualBox extensions
   aur:

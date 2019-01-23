@@ -17,7 +17,7 @@
 
 - name: Install VSCode Extensions
   shell: code --install-extension {{ item }}
-  with_items: "{{ vscode.extensions }}"
+  loop: "{{ vscode.extensions }}"
   when: item not in vscode_extensions.stdout_lines
   become: yes
   become_user: "{{ user.name }}"

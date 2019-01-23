@@ -2,17 +2,14 @@
 - name: Install freetype2
   pacman:
     name: freetype2
-    state: present
 
 - name: Install cairo
   pacman:
     name: cairo
-    state: present
 
 - name: Install fontconfig
   pacman:
     name: fontconfig
-    state: present
 
 - name: Enable LCD filter
   file:
@@ -39,14 +36,12 @@
 
 - name: Install base fonts
   pacman:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ fonts.base }}"
+    name: "{{ fonts.base }}"
 
 - name: Install AUR fonts
   aur:
     name: "{{ item }}"
     user: "{{ user.name }}"
-  with_items: "{{ fonts.aur }}"
+  loop: "{{ fonts.aur }}"
   tags:
     - aur

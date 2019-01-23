@@ -2,7 +2,6 @@
 - name: Install mpv
   pacman:
     name: mpv
-    state: present
 
 - name: Jail mpv
   file:

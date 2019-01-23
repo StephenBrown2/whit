@@ -2,14 +2,12 @@
 - name: Install Cinnamon
   pacman:
     name: cinnamon
-    state: present
 
 - name: Install Arc theme and icons
   pacman:
-    name: "{{ item }}"
-  with_items:
-    - arc-gtk-theme
-    - arc-icon-theme
+    name:
+      - arc-gtk-theme
+      - arc-icon-theme
 
 - name: Install Paper icon set
   aur:

@@ -1,14 +1,13 @@
 ---
 - name: Install RedShift and dependencies
   pacman:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - librsvg
-    - python-gobject
-    - python-xdg
-    - libappindicator-gtk3
-    - redshift
+    name:
+      - librsvg
+      - python-gobject
+      - python-xdg
+      - libappindicator-gtk3
+      - redshift
+
 
 - name: Jail RedShift
   file:

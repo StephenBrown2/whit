@@ -2,17 +2,14 @@
 - name: Install docker
   pacman:
     name: docker
-    state: present
 
 - name: Install docker-compose
   pacman:
     name: docker-compose
-    state: present
 
 - name: Install docker-machine
   pacman:
     name: docker-machine
-    state: present
 
 - name: Create docker group
   group:

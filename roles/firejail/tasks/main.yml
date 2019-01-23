@@ -2,7 +2,6 @@
 - name: Install firejail
   pacman:
     name: firejail
-    state: present
 
 - name: Install firewarden
   aur:
@@ -32,4 +31,4 @@
     dest: /etc/firejail/globals.local
     state: present
     line: blacklist {{ item }}
-  with_items: "{{ firejail.blacklist }}"
+  loop: "{{ firejail.blacklist }}"

@@ -2,12 +2,11 @@
 - name: Install Unbound
   pacman:
     name: unbound
-    state: present
 
 # - name: Install dnssec-trigger
 #   aur:
 #     name: dnssec-trigger
-#     user: '{{ user.name }}'
+#     user: "{{ user.name }}"
 
 - name: Download root hints
   get_url:

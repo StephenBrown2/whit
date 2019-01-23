@@ -2,7 +2,6 @@
 - name: Install OpenSSH
   pacman:
     name: openssh
-    state: present
 
 - name: Push OpenSSH daemon configuration file
   template:
@@ -39,13 +38,11 @@
 - name: Install sshfs
   pacman:
     name: sshfs
-    state: present
   when: ssh.sshfs == True
 
 - name: Install autossh
   pacman:
     name: autossh
-    state: present
   when: ssh.autossh == True
 
 - name: Copy fuse configuration file
@@ -57,12 +54,10 @@
 - name: Install keychain
   pacman:
     name: keychain
-    state: present
 
 - name: Install x11-ask-pass
   pacman:
     name: x11-ssh-askpass
-    state: present
 
 - name: Export SSH_ASKPASS environment variable
   lineinfile:
@@ -125,20 +120,19 @@
     owner: "{{ user.name }}"
     group: "{{ user.group }}"
     mode: 0600
-  with_items: "{{ ssh.user_keys }}"
+  loop: "{{ ssh.user_keys }}"
   when: ssh.user_keys is defined
 
 - name: Install user public SSH key(s)
   copy:
-    src: "{{ item }}.pub"
-    dest: /home/{{ user.name }}/.ssh/keys/{{ item }}.pub
+    src: "{{ item }}"
+    dest: /home/{{ user.name }}/.ssh/keys/{{ item }}
     owner: "{{ user.name }}"
     group: "{{ user.group }}"
     mode: 0644
-  with_items: "{{ ssh.user_keys }}"
+  loop: "{{ ssh.user_keys | map('regex_replace', '^(.*)$', '\\1.pub') | list }}"
   when: ssh.user_keys is defined
 
 - name: Install Mosh
   pacman:
     name: mosh
-    state: present

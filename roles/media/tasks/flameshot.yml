@@ -2,6 +2,5 @@
 - name: Install flameshot
   pacman:
     name: flameshot
-    state: present
   tags:
     - flameshot

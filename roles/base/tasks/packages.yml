@@ -1,9 +1,7 @@
 ---
 - name: Install universal base packages
   pacman:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ base_packages }}"
+    name: "{{ base_packages }}"
   tags:
     - packages
 
@@ -50,7 +48,7 @@
   aur:
     name: "{{ item }}"
     user: "{{ user.name }}"
-  with_items: "{{ aur.packages }}"
+  loop: "{{ aur.packages }}"
   tags:
     - aur
     - packages

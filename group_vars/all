@@ -48,7 +48,7 @@ base_packages:
     - glances
     - go
     - gptfdisk
-    - grml-zsh-config
+    - htop
     - jq
     - lsof
     - meld
@@ -57,8 +57,11 @@ base_packages:
     - prettier
     - pv
     - python-keyring
+    - python-nose
     - python-pipenv
     - python-secretstorage
+    - python-spec
+    - python-tox
     - reflector
     - ripgrep
     - rsync
@@ -88,6 +91,7 @@ aur:
         - python-prospector
         - rambox-bin
         - shfmt
+        - up
         - vivaldi
         - zplug
 
@@ -99,29 +103,32 @@ ntp:
 
 vscode:
     extensions:
-        - vscoss.vscode-ansible
-        - ph-hawkins.arc-plus
-        - JakeWilson.vscode-cdnjs
-        - bierner.color-info
-        - PeterJausovec.vscode-docker
-        - EditorConfig.EditorConfig
-        - dbaeumer.vscode-eslint
         - axosoft.gitkraken-glo
-        - eamodio.gitlens
-        - ms-vscode.Go
-        - robertohuertasm.vscode-icons
-        - zhuangtongfa.Material-theme
-        - mermade.openapi-lint
+        - bierner.color-info
+        - bungcip.better-toml
+        - DavidAnson.vscode-markdownlint
+        - dbaeumer.vscode-eslint
         - derek-nextty.openapi-viewer
+        - eamodio.gitlens
+        - EditorConfig.EditorConfig
         - esbenp.prettier-vscode
-        - GitHub.vscode-pull-request-github
-        - ms-python.python
-        - lextudio.restructuredtext
         - foxundermoon.shell-format
+        - GitHub.vscode-pull-request-github
+        - hangxingliu.vscode-systemd-support
+        - JakeWilson.vscode-cdnjs
+        - lextudio.restructuredtext
+        - mermade.openapi-lint
+        - ms-python.python
+        - ms-vscode.Go
+        - PeterJausovec.vscode-docker
+        - ph-hawkins.arc-plus
+        - redhat.vscode-yaml
+        - robertohuertasm.vscode-icons
+        - shardulm94.trailing-spaces
         - timonwong.shellcheck
         - Tyriar.sort-lines
-        - hangxingliu.vscode-systemd-support
-        - redhat.vscode-yaml
+        - vscoss.vscode-ansible
+        - zhuangtongfa.Material-theme
 
 ssh:
     port: 22

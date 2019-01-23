@@ -1,0 +1,43 @@
+---
+- name: Fetch Cloudflare's roughtime repo
+  git:
+    dest: /home/{{ user.name }}/git/hub/roughtime
+    repo: git@github.com:cloudflare/roughtime.git
+    force: yes
+  become: yes
+  become_user: "{{ user.name }}"
+
+- name: Go get roughtime
+  command: go mod init github.com/cloudflare/roughtime
+  args:
+    chdir: /home/{{ user.name }}/git/hub/roughtime
+    creates: /home/{{ user.name }}/git/hub/roughtime/go.mod
+
+- name: Compile alerter recipe
+  command: go build ./alerter.go
+  args:
+    chdir: /home/{{ user.name }}/git/hub/roughtime/recipes
+
+- name: Move alerter to user bin
+  copy:
+    dest: /home/{{ user.name }}/bin/roughtime-alerter
+    src: /home/{{ user.name }}/git/hub/roughtime/recipes/alerter
+    remote_src: yes
+    group: "{{ user.group }}"
+    mode: 0755
+    owner: "{{ user.name }}"
+
+- name: Remove alerter bin from repo directory
+  file:
+    path: /home/{{ user.name }}/git/hub/roughtime/recipes/alerter
+    state: absent
+
+- name: Create roughtime config directory
+  file:
+    path: /home/{{ user.name }}/.config/roughtime
+    state: directory
+
+- name: Copy ecosystem.json to config
+  copy:
+    dest: /home/{{ user.name }}/.config/roughtime/ecosystem.json
+    src: /home/{{ user.name }}/git/hub/roughtime/ecosystem.json

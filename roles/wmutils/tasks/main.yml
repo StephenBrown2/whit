@@ -1,0 +1,12 @@
+---
+- name: Install window control utils
+  pacman:
+    name:
+      - xdotool
+      - xorg-xprop
+      - xorg-xwininfo
+
+- name: Install winctl
+  aur:
+    name: winctl
+    user: "{{ user.name }}"

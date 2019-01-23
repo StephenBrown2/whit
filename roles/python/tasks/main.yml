@@ -1,0 +1,50 @@
+---
+- name: Install python deps
+  pacman:
+    name:
+      - python-appdirs
+      - python-beautifulsoup4
+      - python-black
+      - python-certifi
+      - python-click
+      - python-cryptography
+      - python-dateutil
+      - python-docker
+      - python-flask
+      - python-isort
+      - python-jedi
+      - python-jinja
+      - python-jsonschema
+      - python-keyring
+      - python-keyrings-alt
+      - python-mccabe
+      - python-pillow
+      - python-pip
+      - python-pipenv
+      - python-pycodestyle
+      - python-pydocstyle
+      - python-pygithub
+      - python-pygments
+      - python-pylint
+      - python-requests
+      - python-secretstorage
+      - python-tabulate
+      - python-toml
+      - python-tox
+      - python-virtualenv
+      - python-virtualenvwrapper
+      - python-voluptuous
+      - python-xdg
+      - python-yaml
+
+- name: Install python AUR deps
+  aur:
+    name: "{{ item }}"
+    user: "{{ user.name }}"
+  loop:
+    - python-colored
+    - python-poetry
+    - python-pre-commit
+    - python-prospector
+    - python-xerox
+    - python-zxcvbn

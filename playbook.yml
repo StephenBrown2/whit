@@ -50,3 +50,4 @@
     - { role: wttr, tags: ['wttr'] }
     - { role: hostsctl, tags: ['hostsctl'], when: "hostsctl is defined" }
     - { role: roughtime, tags: ['roughtime'] }
+    - { role: python, tags: ['python'] }

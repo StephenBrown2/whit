@@ -134,6 +134,7 @@ ssh:
         - github_ecdsa.key
         - gitlab_ed25519.key
         - rackspace.github_rsa.key
+        - stepladder_ed25519.key
     enable_sshd: no
 
 fonts:

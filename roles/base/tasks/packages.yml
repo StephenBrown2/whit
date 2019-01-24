@@ -19,11 +19,17 @@
   tags:
     - packages
 
-- name: Use all cores when compressing packages
+- name: Use all cores when compressing packages using xz
   lineinfile:
     dest: /etc/makepkg.conf
     regexp: "^COMPRESSXZ"
     line: "COMPRESSXZ=(xz -c -z - --threads=0)"
+
+- name: Use all cores when compressing packages using gzip
+  lineinfile:
+    dest: /etc/makepkg.conf
+    regexp: "^COMPRESSGZ"
+    line: "COMPRESSGZ=(pigz -c -f -n)"
 
 - name: Create AUR directory
   file:

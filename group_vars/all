@@ -54,6 +54,7 @@ base_packages:
     - meld
     - moreutils
     - pacman-contrib
+    - pigz
     - prettier
     - pv
     - python-keyring
